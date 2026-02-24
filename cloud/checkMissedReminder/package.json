@@ -1,0 +1,9 @@
+{
+  "name": "checkMissedReminder",
+  "version": "1.0.0",
+  "description": "定时检查超时未确认的服药提醒并通知守护人",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

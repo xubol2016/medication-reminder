@@ -1,0 +1,9 @@
+{
+  "name": "checkMedReminder",
+  "version": "1.0.0",
+  "description": "定时检查并发送服药提醒",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

@@ -1,0 +1,14 @@
+<view class="tab-bar">
+  <view class="tab-item {{selected === 0 ? 'active' : ''}}" bindtap="switchTab" data-index="0" data-url="/pages/index/index">
+    <text class="tab-icon">💊</text>
+    <text class="tab-text">今日</text>
+  </view>
+  <view class="tab-item {{selected === 1 ? 'active' : ''}}" bindtap="switchTab" data-index="1" data-url="/pages/records/records">
+    <text class="tab-icon">📋</text>
+    <text class="tab-text">记录</text>
+  </view>
+  <view class="tab-item {{selected === 2 ? 'active' : ''}}" bindtap="switchTab" data-index="2" data-url="/pages/settings/settings">
+    <text class="tab-icon">⚙️</text>
+    <text class="tab-text">设置</text>
+  </view>
+</view>

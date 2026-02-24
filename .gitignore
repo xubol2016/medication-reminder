@@ -1,0 +1,4 @@
+node_modules/
+.claude/
+*.txt
+project.private.config.json

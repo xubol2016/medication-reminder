@@ -1,0 +1,271 @@
+<page-meta page-style="{{showForm || showMemberPicker || showTipPanel || showTimePicker ? 'overflow:hidden;' : ''}}"></page-meta>
+<view class="container p-24">
+  <!-- 按成员分组的药物列表 -->
+  <block wx:for="{{groupedByMember}}" wx:key="memberId">
+    <view class="member-group-header">
+      <view class="member-avatar">{{item.memberName[0]}}</view>
+      <text class="member-group-name">{{item.memberName}}</text>
+      <text class="member-med-count">{{item.medicines.length}} 种药</text>
+    </view>
+
+    <view class="card med-card" wx:for="{{item.medicines}}" wx:for-item="med" wx:key="id">
+      <view class="med-header">
+        <view class="med-name-wrap">
+          <text class="med-pill-icon">💊</text>
+          <view class="med-name-block">
+            <view class="med-name">{{med.name}}</view>
+            <view class="med-drug-tags" wx:if="{{med.drugNames && med.drugNames.length > 0}}">
+              <text class="med-drug-tag" wx:for="{{med.drugNames}}" wx:key="*this">{{item}}</text>
+            </view>
+          </view>
+        </view>
+        <switch checked="{{med.enabled}}" bindchange="toggleEnabled" data-id="{{med.id}}" color="#4A90D9" />
+      </view>
+      <view class="med-dosage-row">
+        <text class="med-dosage-text">📏 {{med.dosage}}</text>
+      </view>
+      <view class="med-times">
+        <view class="time-tag" wx:for="{{med.times}}" wx:for-item="t" wx:key="*this">🕐 {{t}}</view>
+      </view>
+      <view class="med-actions">
+        <view class="action-btn action-edit" bindtap="editMedicine" data-id="{{med.id}}">✏️ 编辑</view>
+        <view class="action-btn action-delete" bindtap="deleteMedicine" data-id="{{med.id}}" data-name="{{med.name}}">🗑️ 删除</view>
+        <view class="action-btn action-tip" wx:if="{{med.hasTip}}" bindtap="viewMedicineTip" data-id="{{med.id}}">💡 提示</view>
+      </view>
+    </view>
+  </block>
+
+  <view class="empty-state" wx:if="{{totalCount === 0}}">
+    <view class="empty-icon">💊</view>
+    <view class="empty-text">还没有添加药物</view>
+    <view class="empty-hint">点击下方按钮添加药物</view>
+  </view>
+
+  <view class="add-btn-wrap mt-20">
+    <button class="btn-primary" bindtap="showAddForm">➕ 添加药物</button>
+  </view>
+
+  <!-- ===== 编辑/添加表单弹层 ===== -->
+  <view class="tp-mask" wx:if="{{showForm}}" bindtap="cancelForm"></view>
+  <view class="tp-panel form-panel" wx:if="{{showForm}}" catchtap="noop">
+      <view class="tp-title">{{editingId ? '✏️ 编辑药物' : '➕ 添加药物'}}</view>
+      <scroll-view scroll-y class="form-scroll">
+
+        <!-- 服药人 -->
+        <view class="form-group">
+          <view class="form-label">👤 服药人</view>
+          <view class="picker-value" bindtap="openMemberPicker">{{memberNames[memberIndex] || '请选择'}}<text class="picker-arrow">▾</text></view>
+        </view>
+
+        <!-- 药物名称（记忆名称） -->
+        <view class="form-group">
+          <view class="form-label">💊 药物名称 <text class="form-label-hint">便于老人记忆</text></view>
+          <input class="form-input" placeholder="如：降压药、血糖药、心脏病药" value="{{formName}}" bindinput="onNameInput" maxlength="20" />
+        </view>
+
+        <!-- 具体药名（渐进式，每条独立剂量+时间） -->
+        <view class="form-group">
+          <view class="form-label">📋 具体药名 <text class="form-label-hint">可选，含独立剂量和时间</text></view>
+
+          <block wx:for="{{formDrugs}}" wx:key="index" wx:for-index="idx">
+            <view class="drug-name-item">
+
+              <!-- 药名输入行 -->
+              <view class="drug-name-row">
+                <view class="drug-name-num">{{idx + 1}}</view>
+                <input class="drug-name-input"
+                       placeholder="如：氨氯地平"
+                       value="{{item.name}}"
+                       data-idx="{{idx}}"
+                       bindinput="onDrugNameInput" />
+                <view class="drug-name-del" wx:if="{{formDrugs.length > 1}}"
+                      catchtap="removeDrugName" data-idx="{{idx}}">✕</view>
+              </view>
+
+              <!-- 查询按钮 -->
+              <view class="tip-query-btn {{item.name ? 'tip-query-btn-active' : ''}}"
+                    bindtap="queryMedicineTip" data-idx="{{idx}}">
+                <text class="tip-query-icon">🔍</text>
+                <text class="tip-query-text">查询用药提示</text>
+              </view>
+
+              <!-- 加载中 -->
+              <view class="tip-loading" wx:if="{{item.loading}}">
+                <view class="tip-loading-spinner"></view>
+                <text class="tip-loading-text">正在查询用药提示…</text>
+              </view>
+
+              <!-- 查询结果 -->
+              <view class="tip-result-card" wx:if="{{item.tip && !item.loading}}">
+                <view class="tip-section">
+                  <text class="tip-section-label">💊 药效</text>
+                  <text class="tip-section-text">{{item.tip.effect}}</text>
+                </view>
+                <view class="tip-section">
+                  <text class="tip-section-label">🥄 服法</text>
+                  <text class="tip-section-text">{{item.tip.usage}}</text>
+                </view>
+                <view class="tip-section" wx:if="{{item.tip.cautions.length > 0}}">
+                  <text class="tip-section-label">⚠️ 注意事项</text>
+                  <view class="tip-caution-item" wx:for="{{item.tip.cautions}}" wx:key="*this" wx:for-item="caution">
+                    <text class="tip-caution-dot">·</text>
+                    <text class="tip-caution-text">{{caution}}</text>
+                  </view>
+                </view>
+                <view class="tip-section">
+                  <text class="tip-section-label">❤️ 健康提示</text>
+                  <text class="tip-section-text tip-highlight">{{item.tip.tip}}</text>
+                </view>
+              </view>
+
+              <!-- 该具体药名的剂量（有药名时展示） -->
+              <view class="drug-sub-fields" wx:if="{{item.name}}">
+                <view class="drug-sub-row">
+                  <text class="drug-sub-label">📏 剂量</text>
+                  <input class="drug-sub-input"
+                         placeholder="如：1片、2粒"
+                         value="{{item.dosage}}"
+                         data-idx="{{idx}}"
+                         bindinput="onDrugDosageInput" />
+                </view>
+
+                <!-- 该具体药名的服药时间 -->
+                <view class="drug-sub-row drug-times-row">
+                  <text class="drug-sub-label">🕐 服药时间</text>
+                  <view class="drug-times-wrap">
+                    <view class="time-list">
+                      <view class="time-item" wx:for="{{item.times}}" wx:for-item="t" wx:for-index="timeIdx" wx:key="*this">
+                        <text class="time-item-text">{{t}}</text>
+                        <text class="time-remove" catchtap="removeTime" data-target-idx="{{idx}}" data-idx="{{timeIdx}}">✕</text>
+                      </view>
+                    </view>
+                    <view class="add-time-btn" bindtap="openTimePicker" data-target-idx="{{idx}}">➕ 添加时间</view>
+                  </view>
+                </view>
+              </view>
+
+            </view>
+          </block>
+
+          <!-- 继续添加药名按钮 -->
+          <view class="add-drug-name-btn" wx:if="{{formDrugs.length < 5}}" bindtap="addDrugName">
+            ➕ 继续添加药名
+          </view>
+        </view>
+
+        <!-- 全局剂量（仅无具体药名时显示） -->
+        <view class="form-group" wx:if="{{!hasDrugNames}}">
+          <view class="form-label">📏 剂量</view>
+          <input class="form-input" placeholder="如：1片、2粒" value="{{formDosage}}" bindinput="onDosageInput" maxlength="20" />
+        </view>
+
+        <!-- 全局服药时间（仅无具体药名时显示） -->
+        <view class="form-group" style="border-bottom: none;" wx:if="{{!hasDrugNames}}">
+          <view class="form-label">🕐 服药时间</view>
+          <view class="time-list">
+            <view class="time-item" wx:for="{{formTimes}}" wx:key="*this" wx:for-index="idx">
+              <text class="time-item-text">{{item}}</text>
+              <text class="time-remove" catchtap="removeTime" data-target-idx="-1" data-idx="{{idx}}">✕</text>
+            </view>
+          </view>
+          <view class="add-time-btn" bindtap="openTimePicker" data-target-idx="-1">➕ 添加时间</view>
+        </view>
+
+      </scroll-view>
+      <view class="tp-actions">
+        <button class="btn-secondary tp-action-btn" bindtap="cancelForm">取消</button>
+        <button class="btn-primary tp-action-btn" bindtap="saveForm">💾 保存</button>
+      </view>
+  </view>
+
+  <!-- 成员选择器 -->
+  <view class="tp-mask" wx:if="{{showMemberPicker}}" bindtap="closeMemberPicker"></view>
+  <view class="tp-panel" wx:if="{{showMemberPicker}}" catchtap="noop">
+      <view class="tp-title">👤 选择服药人</view>
+      <view class="mp-list">
+        <view class="mp-item {{memberIndex === index ? 'mp-item-active' : ''}}" wx:for="{{members}}" wx:key="id" bindtap="selectMember" data-idx="{{index}}">
+          <view class="mp-avatar">{{item.name[0]}}</view>
+          <text class="mp-name">{{item.name}}</text>
+          <text class="mp-check" wx:if="{{memberIndex === index}}">✓</text>
+        </view>
+      </view>
+      <view class="tp-actions">
+        <button class="btn-secondary tp-action-btn" bindtap="closeMemberPicker">取消</button>
+      </view>
+  </view>
+
+  <!-- 查看已保存用药提示弹层 -->
+  <view class="tp-mask" wx:if="{{showTipPanel}}" bindtap="closeTipPanel"></view>
+  <view class="tp-panel tip-view-panel" wx:if="{{showTipPanel}}" catchtap="noop">
+      <view class="tp-title">💡 {{viewingMedName}} 用药提示</view>
+      <scroll-view scroll-y class="tip-view-scroll">
+        <block wx:for="{{viewingDrugTips}}" wx:key="drugName" wx:for-item="drugItem">
+          <view class="tip-drug-block">
+            <view class="tip-drug-name-badge">{{drugItem.drugName}}</view>
+            <view class="tip-section">
+              <text class="tip-section-label">💊 药效</text>
+              <text class="tip-section-text">{{drugItem.tip.effect}}</text>
+            </view>
+            <view class="tip-section">
+              <text class="tip-section-label">🥄 服法</text>
+              <text class="tip-section-text">{{drugItem.tip.usage}}</text>
+            </view>
+            <view class="tip-section" wx:if="{{drugItem.tip.cautions.length > 0}}">
+              <text class="tip-section-label">⚠️ 注意事项</text>
+              <view class="tip-caution-item" wx:for="{{drugItem.tip.cautions}}" wx:key="*this" wx:for-item="caution">
+                <text class="tip-caution-dot">·</text>
+                <text class="tip-caution-text">{{caution}}</text>
+              </view>
+            </view>
+            <view class="tip-section">
+              <text class="tip-section-label">❤️ 健康提示</text>
+              <text class="tip-section-text tip-highlight">{{drugItem.tip.tip}}</text>
+            </view>
+          </view>
+        </block>
+      </scroll-view>
+      <view class="tp-actions">
+        <button class="btn-primary tp-action-btn" bindtap="closeTipPanel">关闭</button>
+      </view>
+  </view>
+
+  <!-- 时间选择器（全局/具体药名通用） -->
+  <view class="tp-mask" wx:if="{{showTimePicker}}" bindtap="closeTimePicker"></view>
+  <view class="tp-panel" wx:if="{{showTimePicker}}" catchtap="noop">
+      <view class="tp-title">🕐 选择服药时间</view>
+      <view class="tp-presets">
+        <view class="tp-preset-btn" wx:for="{{presetTimes}}" wx:key="time" bindtap="selectPresetTime" data-time="{{item.time}}">
+          <text class="tp-preset-label">{{item.label}}</text>
+          <text class="tp-preset-time">{{item.time}}</text>
+        </view>
+      </view>
+      <view class="tp-divider">
+        <view class="tp-divider-line"></view>
+        <text class="tp-divider-text">自定义</text>
+        <view class="tp-divider-line"></view>
+      </view>
+      <view class="tp-spinners">
+        <view class="tp-spinner">
+          <view class="tp-spin-label">小时</view>
+          <view class="tp-spin-ctrl">
+            <view class="tp-spin-btn" bindtap="adjustHour" data-delta="-1">−</view>
+            <view class="tp-spin-value">{{pickerHour < 10 ? '0' : ''}}{{pickerHour}}</view>
+            <view class="tp-spin-btn" bindtap="adjustHour" data-delta="1">+</view>
+          </view>
+        </view>
+        <view class="tp-colon">:</view>
+        <view class="tp-spinner">
+          <view class="tp-spin-label">分钟</view>
+          <view class="tp-spin-ctrl">
+            <view class="tp-spin-btn" bindtap="adjustMinute" data-delta="-5">−</view>
+            <view class="tp-spin-value">{{pickerMinute < 10 ? '0' : ''}}{{pickerMinute}}</view>
+            <view class="tp-spin-btn" bindtap="adjustMinute" data-delta="5">+</view>
+          </view>
+        </view>
+      </view>
+      <view class="tp-actions">
+        <button class="btn-secondary tp-action-btn" bindtap="closeTimePicker">取消</button>
+        <button class="btn-primary tp-action-btn" bindtap="confirmTimePicker">✓ 确定添加</button>
+      </view>
+  </view>
+</view>

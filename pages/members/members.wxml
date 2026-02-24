@@ -1,0 +1,40 @@
+<view class="container p-24">
+  <!-- 成员列表 -->
+  <view class="card member-card" wx:for="{{members}}" wx:key="id">
+    <view class="member-row">
+      <view class="member-info">
+        <view class="member-avatar">{{item.name[0]}}</view>
+        <view class="member-name">{{item.name}}</view>
+      </view>
+      <view class="member-actions">
+        <view class="action-btn action-edit" bindtap="editMember" data-id="{{item.id}}">✏️ 编辑</view>
+        <view class="action-btn action-delete" bindtap="deleteMember" data-id="{{item.id}}" data-name="{{item.name}}">🗑️ 删除</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{members.length === 0}}">
+    <view class="empty-icon">👨‍👩‍👧‍👦</view>
+    <view class="empty-text">还没有添加成员</view>
+    <view class="empty-hint">点击下方按钮添加家庭成员</view>
+  </view>
+
+  <!-- 添加/编辑表单 -->
+  <view class="card form-card" wx:if="{{showForm}}">
+    <view class="form-title">{{editingId ? '✏️ 编辑成员' : '➕ 添加成员'}}</view>
+    <view class="form-group">
+      <view class="form-label">姓名/称呼</view>
+      <input class="form-input" placeholder="如：爸爸、妈妈" value="{{formName}}" bindinput="onNameInput" maxlength="10" />
+    </view>
+    <view class="form-actions mt-20">
+      <button class="btn-secondary" bindtap="cancelForm">取消</button>
+      <button class="btn-primary" bindtap="saveForm">💾 保存</button>
+    </view>
+  </view>
+
+  <!-- 添加按钮 -->
+  <view class="add-btn-wrap mt-20" wx:if="{{!showForm}}">
+    <button class="btn-primary" bindtap="showAddForm">➕ 添加成员</button>
+  </view>
+</view>

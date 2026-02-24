@@ -1,0 +1,88 @@
+<view class="container">
+  <!-- 日期显示 - 渐变头部 -->
+  <view class="date-bar">
+    <view class="date-bar-inner">
+      <view class="date-left">
+        <text class="date-text">{{today}}</text>
+        <text class="weekday">{{weekday}}</text>
+      </view>
+      <view class="date-greeting">💊</view>
+    </view>
+  </view>
+
+  <!-- 成员切换 -->
+  <scroll-view scroll-x class="member-tabs" wx:if="{{members.length > 0}}">
+    <view class="tab {{currentMember === '' ? 'tab-active' : ''}}" bindtap="switchMember" data-id="">全部</view>
+    <view class="tab {{currentMember === item.id ? 'tab-active' : ''}}" wx:for="{{members}}" wx:key="id" bindtap="switchMember" data-id="{{item.id}}">{{item.name}}</view>
+  </scroll-view>
+
+  <!-- 今日完成率 - 环形进度 -->
+  <view class="card summary-card" wx:if="{{allList.length > 0}}">
+    <view class="summary-content">
+      <view class="ring-progress">
+        <view class="ring-outer">
+          <view class="ring-left-wrap">
+            <view class="ring-left" style="transform: rotate({{completionRate <= 50 ? (completionRate * 3.6) : 180}}deg)"></view>
+          </view>
+          <view class="ring-right-wrap" wx:if="{{completionRate > 50}}">
+            <view class="ring-right" style="transform: rotate({{(completionRate - 50) * 3.6}}deg)"></view>
+          </view>
+          <view class="ring-inner">
+            <text class="ring-percent">{{completionRate}}%</text>
+          </view>
+        </view>
+      </view>
+      <view class="summary-info">
+        <view class="summary-title">今日服药进度</view>
+        <view class="summary-detail">已完成 <text class="text-success">{{takenCount}}</text> / {{filteredList.length}} 项</view>
+        <view class="summary-bar">
+          <view class="progress-bar">
+            <view class="progress-fill" style="width: {{completionRate}}%"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 漏服提醒 -->
+  <view class="alert-bar" wx:if="{{missedCount > 0}}">
+    <text class="alert-icon">⚠️</text>
+    <text class="alert-text">有 {{missedCount}} 项药物漏服，请注意</text>
+  </view>
+
+  <!-- 药物列表 -->
+  <view class="med-list" wx:if="{{filteredList.length > 0}}">
+    <view class="card med-card {{item.status}}" wx:for="{{filteredList}}" wx:key="{{item.medicineId + item.time}}">
+      <view class="med-card-left">
+        <view class="med-time-badge">
+          <text class="med-time-icon">🕐</text>
+          <text class="med-time">{{item.time}}</text>
+        </view>
+        <view class="med-info">
+          <view class="med-name-row">
+            <text class="med-name">{{item.drugName || item.medicineName}}</text>
+          </view>
+          <view class="med-cat-row" wx:if="{{item.drugName}}">
+            <text class="med-cat-label">{{item.medicineName}}</text>
+          </view>
+          <view class="med-sub-row">
+            <text class="med-member">{{item.memberName}}</text>
+            <text class="med-dosage">{{item.dosage}}</text>
+          </view>
+        </view>
+      </view>
+      <view class="med-card-right">
+        <view wx:if="{{item.status === 'taken'}}" class="status-badge status-taken">✓ 已吃</view>
+        <view wx:elif="{{item.status === 'missed'}}" class="status-badge status-missed" bindtap="handleMissed" data-record-id="{{item.recordId}}" data-medicine-id="{{item.medicineId}}" data-member-id="{{item.memberId}}" data-time="{{item.time}}" data-drug-index="{{item.drugIndex}}">✕ 漏服</view>
+        <button wx:else class="btn-take" bindtap="takeMedicine" data-medicine-id="{{item.medicineId}}" data-member-id="{{item.memberId}}" data-time="{{item.time}}" data-drug-index="{{item.drugIndex}}">💊 吃药</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{members.length === 0 || allList.length === 0}}">
+    <view class="empty-icon">📋</view>
+    <view class="empty-text">{{members.length === 0 ? '请先添加成员和药物' : '今天没有需要服药的项目'}}</view>
+    <button class="btn-primary" style="margin-top: 40rpx;" bindtap="goSettings">⚙️ 前往设置</button>
+  </view>
+</view>

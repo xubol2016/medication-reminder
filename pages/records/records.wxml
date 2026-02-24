@@ -1,0 +1,72 @@
+<view class="container">
+  <!-- 月份切换 -->
+  <view class="month-bar">
+    <view class="month-btn" bindtap="prevMonth">◀</view>
+    <text class="month-text">{{year}}年{{month}}月</text>
+    <view class="month-btn" bindtap="nextMonth">▶</view>
+  </view>
+
+  <!-- 日历 -->
+  <view class="calendar card">
+    <view class="cal-header">
+      <text wx:for="{{['日','一','二','三','四','五','六']}}" wx:key="*this" class="cal-header-cell">{{item}}</text>
+    </view>
+    <view class="cal-body">
+      <view wx:for="{{calendarDays}}" wx:key="date"
+        class="cal-cell {{item.isToday ? 'cal-today' : ''}} {{item.isSelected ? 'cal-selected' : ''}} {{!item.date ? 'cal-empty' : ''}}"
+        bindtap="selectDate" data-date="{{item.date}}">
+        <text class="cal-day">{{item.day}}</text>
+        <view class="cal-dot {{item.allTaken ? 'dot-green' : item.hasMissed ? 'dot-red' : ''}}" wx:if="{{item.hasRecords}}"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 成员筛选 -->
+  <scroll-view scroll-x class="member-tabs" wx:if="{{members.length > 0}}">
+    <view class="tab {{currentMember === '' ? 'tab-active' : ''}}" bindtap="switchMember" data-id="">全部</view>
+    <view class="tab {{currentMember === item.id ? 'tab-active' : ''}}" wx:for="{{members}}" wx:key="id" bindtap="switchMember" data-id="{{item.id}}">{{item.name}}</view>
+  </scroll-view>
+
+  <!-- 当日完成率 -->
+  <view class="card day-card" wx:if="{{dayRecords.length > 0}}">
+    <view class="day-summary">
+      <view class="day-date-wrap">
+        <text class="day-date-icon">📅</text>
+        <text class="day-date">{{selectedDate}}</text>
+      </view>
+      <view class="day-rate-badge">
+        <text class="day-rate">{{dayTakenCount}}/{{dayRecords.length}}</text>
+        <text class="day-rate-label">已完成</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 记录列表 -->
+  <view class="record-list">
+    <view class="card record-item" wx:for="{{dayRecords}}" wx:key="{{item.medicineId + item.time}}">
+      <view class="record-left">
+        <view class="record-time-badge">
+          <text class="record-time">{{item.time}}</text>
+        </view>
+        <view class="record-info">
+          <text class="record-name">{{item.drugName || item.medicineName}}</text>
+          <text class="record-cat-label" wx:if="{{item.drugName}}">{{item.medicineName}}</text>
+          <view class="record-sub-row">
+            <text class="record-member">{{item.memberName}}</text>
+            <text class="record-dosage" wx:if="{{item.dosage}}">{{item.dosage}}</text>
+          </view>
+        </view>
+      </view>
+      <view class="record-status">
+        <view wx:if="{{item.status === 'taken'}}" class="status-pill status-pill-taken">✓ 已吃</view>
+        <view wx:elif="{{item.status === 'missed'}}" class="status-pill status-pill-missed">✕ 漏服</view>
+        <view wx:else class="status-pill status-pill-pending">◦ 待服</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty-hint" wx:if="{{dayRecords.length === 0}}">
+    <text class="empty-hint-icon">📭</text>
+    <text class="empty-hint-text">该日无服药记录</text>
+  </view>
+</view>

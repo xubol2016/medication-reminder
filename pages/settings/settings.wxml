@@ -1,0 +1,109 @@
+<view class="container p-24">
+  <!-- 管理入口 -->
+  <view class="section-title">📋 管理</view>
+  <view class="card menu-card">
+    <view class="menu-item" bindtap="goMembers">
+      <view class="menu-item-left">
+        <view class="menu-icon menu-icon-blue">👥</view>
+        <text class="menu-text">成员管理</text>
+      </view>
+      <view class="menu-item-right">
+        <text class="menu-count">{{memberCount}} 人</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+    <view class="menu-item" bindtap="goMedicines">
+      <view class="menu-item-left">
+        <view class="menu-icon menu-icon-green">💊</view>
+        <text class="menu-text">药物管理</text>
+      </view>
+      <view class="menu-item-right">
+        <text class="menu-count">{{medicineCount}} 种</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+    <view class="menu-item" bindtap="goGuardians">
+      <view class="menu-item-left">
+        <view class="menu-icon menu-icon-orange">🛡️</view>
+        <text class="menu-text">守护人管理</text>
+      </view>
+      <view class="menu-item-right">
+        <text class="menu-count">{{guardianCount}} 人</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 数据管理 -->
+  <view class="section-title">🗂️ 数据</view>
+  <view class="card menu-card">
+    <view class="menu-item" bindtap="cleanOldData">
+      <view class="menu-item-left">
+        <view class="menu-icon menu-icon-orange">🧹</view>
+        <text class="menu-text">清理历史记录</text>
+      </view>
+      <view class="menu-item-right">
+        <text class="menu-hint">保留近6个月</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+    <view class="menu-item" bindtap="clearAllData">
+      <view class="menu-item-left">
+        <view class="menu-icon menu-icon-red">🗑️</view>
+        <text class="menu-text text-danger">清除所有数据</text>
+      </view>
+      <view class="menu-item-right">
+        <text class="menu-hint">不可恢复</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 通知设置 -->
+  <view class="section-title">🔔 通知</view>
+  <view class="card menu-card">
+    <view class="menu-item" bindtap="requestSubscription">
+      <view class="menu-item-left">
+        <view class="menu-icon menu-icon-green">🔔</view>
+        <text class="menu-text">开启服药提醒通知</text>
+      </view>
+      <view class="menu-item-right">
+        <text class="menu-hint">点击授权</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+    <view class="menu-item" bindtap="requestGuardianSubscription">
+      <view class="menu-item-left">
+        <view class="menu-icon menu-icon-orange">📢</view>
+        <text class="menu-text">开启漏服守护通知</text>
+      </view>
+      <view class="menu-item-right">
+        <text class="menu-hint">通知守护人</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 关于 -->
+  <view class="section-title">ℹ️ 关于</view>
+  <view class="card menu-card">
+    <view class="menu-item">
+      <view class="menu-item-left">
+        <view class="menu-icon menu-icon-purple">📱</view>
+        <text class="menu-text">版本</text>
+      </view>
+      <text class="menu-hint">v1.0.0</text>
+    </view>
+  </view>
+
+  <!-- 使用提示 -->
+  <view class="tips card">
+    <view class="tips-title">💡 使用提示</view>
+    <view class="tips-text">· 请在服药时间前打开小程序，系统会弹窗提醒</view>
+    <view class="tips-text">· 漏服的药物会在下次打开时自动标记</view>
+    <view class="tips-text">· 数据存储在本地，清除小程序缓存会丢失数据</view>
+    <view class="tips-text">· 添加守护人后，漏服时会自动发送微信提醒给守护人</view>
+    <view class="tips-text">· 点击"开启服药提醒通知"可授权微信推送提醒，无需打开小程序也能收到</view>
+    <view class="tips-text">· 每次授权可获得1次推送机会，建议多次点击授权</view>
+  </view>
+</view>
