@@ -29,13 +29,17 @@ exports.main = async (event, context) => {
     db.collection('user_records').where({ ownerOpenId }).limit(1000).get()
   ])
 
-  // 将云端字段映射回本地 storage 一致的结构
-  const members = (membersRes.data || []).map(m => ({
+  // 按本地 ID 去重，防止云端因并发同步产生的重复数据
+  const memberMap = {}
+  ;(membersRes.data || []).forEach(m => { memberMap[m.localMemberId] = m })
+  const members = Object.values(memberMap).map(m => ({
     id: m.localMemberId,
     name: m.name
   }))
 
-  const medicines = (medicinesRes.data || []).map(m => ({
+  const medicineMap = {}
+  ;(medicinesRes.data || []).forEach(m => { medicineMap[m.localMedicineId] = m })
+  const medicines = Object.values(medicineMap).map(m => ({
     id: m.localMedicineId,
     memberId: m.memberId,
     name: m.name,
@@ -48,7 +52,9 @@ exports.main = async (event, context) => {
     healthTip: m.healthTip || null
   }))
 
-  const records = (recordsRes.data || []).map(r => ({
+  const recordMap = {}
+  ;(recordsRes.data || []).forEach(r => { recordMap[r.localRecordId] = r })
+  const records = Object.values(recordMap).map(r => ({
     id: r.localRecordId,
     medicineId: r.medicineId,
     memberId: r.memberId,

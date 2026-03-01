@@ -3,6 +3,8 @@ const { getMembers, getMedicines, getRecords, getMemberById } = require('./stora
 
 // 缓存 ownerOpenId 避免重复调用
 let _cachedOpenId = null
+// 同步锁，防止并发调用导致云端数据重复
+let _syncLocks = { members: false, medicines: false, records: false }
 
 function getOwnerOpenId() {
   return new Promise((resolve, reject) => {
@@ -35,17 +37,29 @@ function getAllCloudRecords(db, collection, ownerOpenId) {
 
 // 同步所有药品数据到云数据库
 function syncMedicinesToCloud() {
-  if (!wx.cloud) return
+  if (!wx.cloud || _syncLocks.medicines) return
+  _syncLocks.medicines = true
 
   getOwnerOpenId().then(ownerOpenId => {
-    if (!ownerOpenId) return
+    if (!ownerOpenId) { _syncLocks.medicines = false; return }
 
     const medicines = getMedicines()
     const db = wx.cloud.database()
 
     getAllCloudRecords(db, 'user_medicines', ownerOpenId).then(cloudMeds => {
-      const cloudMap = {}
-      cloudMeds.forEach(m => { cloudMap[m.localMedicineId] = m })
+      // 云端去重：按 localMedicineId 保留最新一条，删除多余的
+      const cloudByLocal = {}
+      const duplicates = []
+      cloudMeds.forEach(m => {
+        if (cloudByLocal[m.localMedicineId]) {
+          duplicates.push(m._id)
+        } else {
+          cloudByLocal[m.localMedicineId] = m
+        }
+      })
+      duplicates.forEach(id => {
+        db.collection('user_medicines').doc(id).remove().catch(() => {})
+      })
 
       const localMap = {}
       medicines.forEach(med => { localMap[med.id] = med })
@@ -54,7 +68,7 @@ function syncMedicinesToCloud() {
       medicines.forEach(med => {
         const member = getMemberById(med.memberId)
         const memberName = member ? member.name : '未知'
-        const cloudMed = cloudMap[med.id]
+        const cloudMed = cloudByLocal[med.id]
 
         const data = {
           ownerOpenId,
@@ -84,37 +98,51 @@ function syncMedicinesToCloud() {
       })
 
       // 删除云端多余的（本地已删除的）
-      cloudMeds.forEach(cloudMed => {
+      Object.values(cloudByLocal).forEach(cloudMed => {
         if (!localMap[cloudMed.localMedicineId]) {
           db.collection('user_medicines').doc(cloudMed._id).remove()
             .catch(err => console.warn('云端删除药品失败:', err))
         }
       })
-    })
+      _syncLocks.medicines = false
+    }).catch(() => { _syncLocks.medicines = false })
   }).catch(err => {
+    _syncLocks.medicines = false
     console.warn('云同步失败（getOpenId 不可用）:', err)
   })
 }
 
 // 同步成员数据到云数据库
 function syncMembersToCloud() {
-  if (!wx.cloud) return
+  if (!wx.cloud || _syncLocks.members) return
+  _syncLocks.members = true
 
   getOwnerOpenId().then(ownerOpenId => {
-    if (!ownerOpenId) return
+    if (!ownerOpenId) { _syncLocks.members = false; return }
 
     const members = getMembers()
     const db = wx.cloud.database()
 
     getAllCloudRecords(db, 'user_members', ownerOpenId).then(cloudMembers => {
-      const cloudMap = {}
-      cloudMembers.forEach(m => { cloudMap[m.localMemberId] = m })
+      // 云端去重：按 localMemberId 保留最新一条，删除多余的
+      const cloudByLocal = {}
+      const duplicates = []
+      cloudMembers.forEach(m => {
+        if (cloudByLocal[m.localMemberId]) {
+          duplicates.push(m._id)
+        } else {
+          cloudByLocal[m.localMemberId] = m
+        }
+      })
+      duplicates.forEach(id => {
+        db.collection('user_members').doc(id).remove().catch(() => {})
+      })
 
       const localMap = {}
       members.forEach(m => { localMap[m.id] = m })
 
       members.forEach(member => {
-        const cloudMember = cloudMap[member.id]
+        const cloudMember = cloudByLocal[member.id]
         const data = {
           ownerOpenId,
           localMemberId: member.id,
@@ -133,24 +161,27 @@ function syncMembersToCloud() {
         }
       })
 
-      cloudMembers.forEach(cloudMember => {
+      Object.values(cloudByLocal).forEach(cloudMember => {
         if (!localMap[cloudMember.localMemberId]) {
           db.collection('user_members').doc(cloudMember._id).remove()
             .catch(err => console.warn('云端删除成员失败:', err))
         }
       })
-    })
+      _syncLocks.members = false
+    }).catch(() => { _syncLocks.members = false })
   }).catch(err => {
+    _syncLocks.members = false
     console.warn('成员云同步失败:', err)
   })
 }
 
 // 同步最近30天的记录到云数据库
 function syncRecordsToCloud() {
-  if (!wx.cloud) return
+  if (!wx.cloud || _syncLocks.records) return
+  _syncLocks.records = true
 
   getOwnerOpenId().then(ownerOpenId => {
-    if (!ownerOpenId) return
+    if (!ownerOpenId) { _syncLocks.records = false; return }
 
     const allRecords = getRecords()
     const db = wx.cloud.database()
@@ -162,14 +193,25 @@ function syncRecordsToCloud() {
     const recentRecords = allRecords.filter(r => r.date >= cutoffStr)
 
     getAllCloudRecords(db, 'user_records', ownerOpenId).then(cloudRecords => {
-      const cloudMap = {}
-      cloudRecords.forEach(r => { cloudMap[r.localRecordId] = r })
+      // 云端去重：按 localRecordId 保留最新一条，删除多余的
+      const cloudByLocal = {}
+      const duplicates = []
+      cloudRecords.forEach(r => {
+        if (cloudByLocal[r.localRecordId]) {
+          duplicates.push(r._id)
+        } else {
+          cloudByLocal[r.localRecordId] = r
+        }
+      })
+      duplicates.forEach(id => {
+        db.collection('user_records').doc(id).remove().catch(() => {})
+      })
 
       const localMap = {}
       recentRecords.forEach(r => { localMap[r.id] = r })
 
       recentRecords.forEach(record => {
-        const cloudRecord = cloudMap[record.id]
+        const cloudRecord = cloudByLocal[record.id]
         const data = {
           ownerOpenId,
           localRecordId: record.id,
@@ -195,14 +237,16 @@ function syncRecordsToCloud() {
       })
 
       // 删除云端多余的（本地已删除或超出30天的）
-      cloudRecords.forEach(cloudRecord => {
+      Object.values(cloudByLocal).forEach(cloudRecord => {
         if (!localMap[cloudRecord.localRecordId]) {
           db.collection('user_records').doc(cloudRecord._id).remove()
             .catch(err => console.warn('云端删除记录失败:', err))
         }
       })
-    })
+      _syncLocks.records = false
+    }).catch(() => { _syncLocks.records = false })
   }).catch(err => {
+    _syncLocks.records = false
     console.warn('记录云同步失败:', err)
   })
 }
