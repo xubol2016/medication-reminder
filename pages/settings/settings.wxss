@@ -81,6 +81,28 @@
   color: #a0a0b8;
 }
 
+.menu-quota {
+  font-size: 18px;
+  font-weight: 600;
+  padding: 8rpx 24rpx;
+  border-radius: 16rpx;
+}
+
+.quota-ok {
+  color: #2ecc71;
+  background: linear-gradient(135deg, #e8faf0, #d5f5e3);
+}
+
+.quota-warn {
+  color: #f0932b;
+  background: linear-gradient(135deg, #fff5e6, #ffe8cc);
+}
+
+.quota-empty {
+  color: #e74c3c;
+  background: linear-gradient(135deg, #fef0f0, #fde8e8);
+}
+
 .menu-arrow {
   font-size: 24px;
   color: #d0d0d8;

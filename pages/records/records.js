@@ -29,13 +29,27 @@ Page({
     members: [],
     currentMember: '',
     dayRecords: [],
-    dayTakenCount: 0
+    dayTakenCount: 0,
+    isGuardian: false,
+    guardianOwnerName: '',
+    isSecondary: false,
+    primaryOwnerName: ''
   },
+
+  _lastDataVersion: -1,
+  _secondaryReloadTimer: null,
 
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 1 })
     }
+    const app = getApp()
+    this.setData({
+      isGuardian: app.globalData.isGuardian,
+      guardianOwnerName: app.globalData.isGuardian ? app.globalData.guardianOwnerName : '',
+      isSecondary: app.globalData.isSecondary === true,
+      primaryOwnerName: app.globalData.isSecondary ? app.globalData.primaryOwnerName : ''
+    })
     const now = new Date()
     const today = getToday()
     this.setData({
@@ -46,6 +60,51 @@ Page({
     })
     this.buildCalendar()
     this.loadDayRecords()
+
+    if (this.data.isSecondary) {
+      this.startSecondaryAutoReload()
+    }
+  },
+
+  onHide() {
+    this.stopSecondaryAutoReload()
+  },
+
+  // 副成员手动刷新
+  manualRefresh() {
+    wx.showLoading({ title: '刷新中...' })
+    getApp().refreshSecondaryData((success) => {
+      wx.hideLoading()
+      if (success) {
+        this.setData({ members: getMembers() })
+        this.buildCalendar()
+        this.loadDayRecords()
+        wx.showToast({ title: '已刷新', icon: 'success' })
+      } else {
+        wx.showToast({ title: '刷新失败', icon: 'none' })
+      }
+    })
+  },
+
+  startSecondaryAutoReload() {
+    this.stopSecondaryAutoReload()
+    const app = getApp()
+    this._lastDataVersion = app.globalData.dataVersion
+    this._secondaryReloadTimer = setInterval(() => {
+      if (app.globalData.dataVersion !== this._lastDataVersion) {
+        this._lastDataVersion = app.globalData.dataVersion
+        this.setData({ members: getMembers() })
+        this.buildCalendar()
+        this.loadDayRecords()
+      }
+    }, 2000)
+  },
+
+  stopSecondaryAutoReload() {
+    if (this._secondaryReloadTimer) {
+      clearInterval(this._secondaryReloadTimer)
+      this._secondaryReloadTimer = null
+    }
   },
 
   prevMonth() {
@@ -77,7 +136,6 @@ Page({
     }
 
     // 获取当月所有记录用于标记
-    const allRecords = []
     for (let d = 1; d <= daysInMonth; d++) {
       const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`
       const dayRecords = getRecordsByDate(dateStr)

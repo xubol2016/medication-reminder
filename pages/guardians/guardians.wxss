@@ -103,6 +103,30 @@
   background: linear-gradient(135deg, #e8faf0, #d5f5e3);
 }
 
+/* 守护人配额标签 */
+.guardian-quota {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10rpx 24rpx;
+  border-radius: 16rpx;
+  align-self: center;
+}
+
+.quota-ok {
+  color: #2ecc71;
+  background: linear-gradient(135deg, #e8faf0, #d5f5e3);
+}
+
+.quota-warn {
+  color: #f0932b;
+  background: linear-gradient(135deg, #fff5e6, #ffe8cc);
+}
+
+.quota-empty {
+  color: #e74c3c;
+  background: linear-gradient(135deg, #fef0f0, #fde8e8);
+}
+
 .action-edit {
   color: #4A90D9;
   background: linear-gradient(135deg, #eef4fc, #dce8f8);
@@ -224,6 +248,15 @@
   transform: scale(0.94);
 }
 
+/* 自定义关系输入 */
+.custom-relation-wrap {
+  margin-top: 20rpx;
+}
+
+.custom-relation-input {
+  font-size: 20px;
+}
+
 .form-actions {
   display: flex;
   gap: 24rpx;
@@ -301,6 +334,10 @@
   width: 100%;
 }
 
+.btn-share {
+  font-size: 22px;
+}
+
 .btn-copy {
   font-size: 22px;
 }
@@ -316,6 +353,11 @@
 /* 添加按钮 */
 .add-btn-wrap {
   padding: 0 24rpx;
+}
+
+.btn-input-code {
+  margin-top: 20rpx;
+  font-size: 20px;
 }
 
 /* 使用提示 */

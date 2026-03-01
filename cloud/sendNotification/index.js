@@ -42,8 +42,8 @@ exports.main = async (event, context) => {
         templateId: templateId,
         data: {
           thing1: { value: memberName },
-          thing2: { value: medicineName },
-          time3: { value: `${date} ${missedTime}` },
+          time2: { value: `${date} ${missedTime}` },
+          thing3: { value: medicineName },
           thing4: { value: '请及时提醒家人服药' }
         },
         page: 'pages/index/index'
@@ -67,5 +67,10 @@ exports.main = async (event, context) => {
     }
   }
 
-  return { sent: true, results }
+  // 统计配额情况
+  const noQuotaCount = results.filter(r => !r.success && r.reason === 'no_subscription_quota').length
+  const totalGuardians = bindings.length
+  const sentCount = results.filter(r => r.success).length
+
+  return { sent: true, results, noQuotaCount, totalGuardians, sentCount }
 }

@@ -1,4 +1,19 @@
 <view class="container">
+  <!-- 守护人提示条 -->
+  <view class="guardian-banner" wx:if="{{isGuardian}}">
+    <text class="guardian-banner-icon">👁️</text>
+    <text class="guardian-banner-text">正在查看 {{guardianOwnerName}} 的用药记录（只读）</text>
+  </view>
+
+  <!-- 副成员提示条 -->
+  <view class="secondary-banner" wx:if="{{isSecondary}}">
+    <view class="secondary-banner-left">
+      <text class="secondary-banner-icon">👁️</text>
+      <text class="secondary-banner-text">正在查看 {{primaryOwnerName}} 的用药记录（只读）</text>
+    </view>
+    <view class="refresh-btn" bindtap="manualRefresh">🔄 刷新</view>
+  </view>
+
   <!-- 月份切换 -->
   <view class="month-bar">
     <view class="month-btn" bindtap="prevMonth">◀</view>

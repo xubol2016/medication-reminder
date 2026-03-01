@@ -18,7 +18,7 @@ exports.main = async (event, context) => {
 
     const binding = data[0]
     if (binding.status === 'bound') {
-      return { success: false, message: '该邀请已被绑定' }
+      return { success: false, alreadyBound: true, message: '守护人的邀请已被绑定' }
     }
 
     await db.collection('guardian_bindings').doc(binding._id).update({
@@ -67,6 +67,38 @@ exports.main = async (event, context) => {
     }
 
     return { success: true }
+  }
+
+  if (action === 'getQuota') {
+    const myOpenId = wxContext.OPENID
+
+    // 查询当前用户自身的订阅配额
+    const { data: myTokens } = await db.collection('subscription_tokens').where({
+      guardianOpenId: myOpenId,
+      templateId
+    }).get()
+    const myRemaining = myTokens.length > 0 ? myTokens[0].remaining : 0
+
+    // 查询所有已绑定守护人的订阅配额（含明细）
+    const { data: bindings } = await db.collection('guardian_bindings').where({
+      ownerOpenId: myOpenId,
+      status: 'bound'
+    }).get()
+
+    let guardianTotal = 0
+    const guardianQuotas = {}
+    for (const binding of bindings) {
+      if (binding.guardianOpenId === myOpenId) continue
+      const { data: gTokens } = await db.collection('subscription_tokens').where({
+        guardianOpenId: binding.guardianOpenId,
+        templateId
+      }).get()
+      const remaining = gTokens.length > 0 ? gTokens[0].remaining : 0
+      guardianTotal += remaining
+      guardianQuotas[binding.guardianOpenId] = remaining
+    }
+
+    return { success: true, myRemaining, guardianTotal, guardianQuotas, guardianCount: bindings.length }
   }
 
   return { success: false, message: '未知操作' }

@@ -174,9 +174,7 @@
 }
 
 .form-scroll {
-  flex: 1;
-  height: 0;
-  overflow: hidden;
+  height: calc(80vh - 300rpx);
 }
 
 .form-title {

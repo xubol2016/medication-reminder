@@ -1,6 +1,5 @@
 const { getMembers } = require('../../utils/storage')
 const { getMedicines, saveMedicine, deleteMedicine, getMedicineById } = require('../../utils/storage')
-const { syncMedicinesToCloud } = require('../../utils/cloud-sync')
 
 Page({
   data: {
@@ -35,6 +34,10 @@ Page({
   },
 
   onShow() {
+    const app = getApp()
+    this.setData({
+      isReadOnly: app.globalData.isSecondary === true || app.globalData.isGuardian === true
+    })
     this.loadData()
   },
 
@@ -129,7 +132,7 @@ Page({
         if (res.confirm) {
           deleteMedicine(id)
           this.loadData()
-          syncMedicinesToCloud()
+
           wx.showToast({ title: '已删除', icon: 'success' })
         }
       }
@@ -143,7 +146,6 @@ Page({
       med.enabled = e.detail.value
       saveMedicine(med)
       this.loadData()
-      syncMedicinesToCloud()
     }
   },
 
@@ -371,7 +373,6 @@ Page({
       hasDrugNames: false
     })
     this.loadData()
-    syncMedicinesToCloud()
     wx.showToast({ title: '已保存', icon: 'success' })
   },
 

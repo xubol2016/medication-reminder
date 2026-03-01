@@ -21,20 +21,51 @@ Page({
     filteredList: [],
     missedCount: 0,
     takenCount: 0,
-    completionRate: 0
+    completionRate: 0,
+    isGuardian: false,
+    guardianOwnerName: '',
+    isSecondary: false,
+    primaryOwnerName: ''
   },
+
+  _lastDataVersion: -1,
+  _secondaryReloadTimer: null,
 
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 0 })
     }
-    checkMissedMedications()
-    this.loadData()
-    this.startReminder()
+
+    this._initPage()
+  },
+
+  _initPage() {
+    const app = getApp()
+    const isGuardian = app.globalData.isGuardian
+    const isSecondary = app.globalData.isSecondary
+
+    this.setData({
+      isGuardian,
+      guardianOwnerName: isGuardian ? app.globalData.guardianOwnerName : '',
+      isSecondary,
+      primaryOwnerName: isSecondary ? app.globalData.primaryOwnerName : ''
+    })
+
+    if (isSecondary) {
+      this.loadData()
+      this.startSecondaryAutoReload()
+    } else if (isGuardian) {
+      this.loadData()
+    } else {
+      checkMissedMedications()
+      this.loadData()
+      this.startReminder()
+    }
   },
 
   onHide() {
     this.stopReminder()
+    this.stopSecondaryAutoReload()
   },
 
   loadData() {
@@ -68,6 +99,7 @@ Page({
   },
 
   takeMedicine(e) {
+    if (this.data.isGuardian || this.data.isSecondary) return
     const { medicineId, memberId, time } = e.currentTarget.dataset
     const drugIndex = parseDrugIndex(e.currentTarget.dataset.drugIndex)
     const today = getToday()
@@ -88,6 +120,7 @@ Page({
   },
 
   handleMissed(e) {
+    if (this.data.isGuardian || this.data.isSecondary) return
     const { recordId, medicineId, memberId, time } = e.currentTarget.dataset
     const drugIndex = parseDrugIndex(e.currentTarget.dataset.drugIndex)
     const today = getToday()
@@ -125,7 +158,42 @@ Page({
     wx.switchTab({ url: '/pages/settings/settings' })
   },
 
+  // 副成员手动刷新
+  manualRefresh() {
+    wx.showLoading({ title: '刷新中...' })
+    getApp().refreshSecondaryData((success) => {
+      wx.hideLoading()
+      if (success) {
+        this.loadData()
+        wx.showToast({ title: '已刷新', icon: 'success' })
+      } else {
+        wx.showToast({ title: '刷新失败', icon: 'none' })
+      }
+    })
+  },
+
+  // 副成员自动重新加载（监听 dataVersion 变化）
+  startSecondaryAutoReload() {
+    this.stopSecondaryAutoReload()
+    const app = getApp()
+    this._lastDataVersion = app.globalData.dataVersion
+    this._secondaryReloadTimer = setInterval(() => {
+      if (app.globalData.dataVersion !== this._lastDataVersion) {
+        this._lastDataVersion = app.globalData.dataVersion
+        this.loadData()
+      }
+    }, 2000)
+  },
+
+  stopSecondaryAutoReload() {
+    if (this._secondaryReloadTimer) {
+      clearInterval(this._secondaryReloadTimer)
+      this._secondaryReloadTimer = null
+    }
+  },
+
   startReminder() {
+    if (this.data.isGuardian || this.data.isSecondary) return
     this.stopReminder()
     const app = getApp()
     app.globalData.reminderInterval = setInterval(() => {

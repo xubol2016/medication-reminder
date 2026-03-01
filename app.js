@@ -23,20 +23,64 @@ App({
       wx.setStorageSync('guardians', [])
     }
 
-    // 检查是否通过守护人邀请链接打开
+    // 新用户默认为主成员（owner）
+    if (!wx.getStorageSync('appRole')) {
+      wx.setStorageSync('appRole', 'owner')
+    }
+
+    // 检查是否通过邀请链接打开
     if (options && options.query && options.query.inviteCode) {
       this.globalData.pendingInviteCode = options.query.inviteCode
+    }
+
+    // 根据持久化角色恢复 globalData 状态
+    const role = wx.getStorageSync('appRole')
+    if (role === 'secondary') {
+      this.globalData.isSecondary = true
+      this.globalData.secondaryChecked = true
+      this.globalData.guardianChecked = true
+      this.globalData.primaryOwnerName = wx.getStorageSync('primaryOwnerName') || '家人'
+    } else if (role === 'guardian') {
+      this.globalData.isGuardian = true
+      this.globalData.guardianChecked = true
+      this.globalData.secondaryChecked = true
+      this.globalData.guardianOwnerName = wx.getStorageSync('guardianOwnerName') || '家人'
+    } else {
+      // owner
+      this.globalData.isGuardian = false
+      this.globalData.isSecondary = false
+      this.globalData.guardianChecked = true
+      this.globalData.secondaryChecked = true
     }
   },
 
   onShow() {
-    // 每次打开小程序时同步药品数据到云端
+    const role = wx.getStorageSync('appRole') || 'owner'
+
+    if (role === 'secondary') {
+      // 副成员：刷新云端数据
+      this.refreshSecondaryData()
+      this.startSecondaryRefresh()
+    } else if (role === 'guardian') {
+      // 守护人：刷新云端数据
+      this.refreshGuardianData()
+    } else {
+      // 主成员：正常流程
+      this.runOwnerFlow()
+    }
+  },
+
+  onHide() {
+    this.stopSecondaryRefresh()
+  },
+
+  // 主成员的正常流程
+  runOwnerFlow() {
     if (wx.cloud) {
-      const { syncMedicinesToCloud } = require('./utils/cloud-sync')
-      syncMedicinesToCloud()
+      const { syncAllToCloud } = require('./utils/cloud-sync')
+      syncAllToCloud()
     }
 
-    // 每次打开小程序时检查漏服并通知守护人
     const newlyMissed = checkMissedMedications()
     if (newlyMissed && newlyMissed.length > 0 && wx.cloud) {
       const { notifyGuardians } = require('./utils/notify')
@@ -55,9 +99,124 @@ App({
     }
   },
 
+  // ===== 角色切换方法（由邀请接受流程调用） =====
+
+  // 切换为副成员角色
+  switchToSecondary(data, ownerName) {
+    wx.setStorageSync('appRole', 'secondary')
+    wx.setStorageSync('primaryOwnerName', ownerName)
+    this.globalData.isSecondary = true
+    this.globalData.isGuardian = false
+    this.globalData.secondaryData = data
+    this.globalData.primaryOwnerName = ownerName
+    this.globalData.secondaryChecked = true
+    this.globalData.guardianChecked = true
+    this.startSecondaryRefresh()
+  },
+
+  // 切换为守护人角色
+  switchToGuardian(data, ownerName) {
+    wx.setStorageSync('appRole', 'guardian')
+    wx.setStorageSync('guardianOwnerName', ownerName)
+    this.globalData.isGuardian = true
+    this.globalData.isSecondary = false
+    this.globalData.guardianData = data
+    this.globalData.guardianOwnerName = ownerName
+    this.globalData.guardianChecked = true
+    this.globalData.secondaryChecked = true
+  },
+
+  // 重置为主成员角色
+  resetToOwner() {
+    wx.setStorageSync('appRole', 'owner')
+    this.globalData.isGuardian = false
+    this.globalData.isSecondary = false
+    this.globalData.guardianData = null
+    this.globalData.secondaryData = null
+    this.globalData.guardianChecked = true
+    this.globalData.secondaryChecked = true
+    this.stopSecondaryRefresh()
+  },
+
+  // 刷新守护人端的云端数据
+  refreshGuardianData(callback) {
+    if (!wx.cloud) {
+      if (callback) callback(false)
+      return
+    }
+    wx.cloud.callFunction({ name: 'getOwnerData' }).then(res => {
+      if (res.result && res.result.success) {
+        this.globalData.guardianData = {
+          members: res.result.members || [],
+          medicines: res.result.medicines || [],
+          records: res.result.records || []
+        }
+        this.globalData.guardianOwnerName = res.result.ownerName || '家人'
+        if (callback) callback(true)
+      } else {
+        if (callback) callback(false)
+      }
+    }).catch(err => {
+      console.warn('刷新守护人数据失败:', err)
+      if (callback) callback(false)
+    })
+  },
+
+  // 启动副成员数据自动刷新（60秒间隔）
+  startSecondaryRefresh() {
+    this.stopSecondaryRefresh()
+    this.globalData.secondaryRefreshInterval = setInterval(() => {
+      this.refreshSecondaryData()
+    }, 60000)
+  },
+
+  // 停止副成员自动刷新
+  stopSecondaryRefresh() {
+    if (this.globalData.secondaryRefreshInterval) {
+      clearInterval(this.globalData.secondaryRefreshInterval)
+      this.globalData.secondaryRefreshInterval = null
+    }
+  },
+
+  // 刷新副成员数据
+  refreshSecondaryData(callback) {
+    if (!wx.cloud) {
+      if (callback) callback(false)
+      return
+    }
+    wx.cloud.callFunction({ name: 'getSecondaryData' }).then(res => {
+      if (res.result && res.result.success) {
+        this.globalData.secondaryData = {
+          members: res.result.members || [],
+          medicines: res.result.medicines || [],
+          records: res.result.records || []
+        }
+        this.globalData.primaryOwnerName = res.result.ownerName || '家人'
+        this.globalData.dataVersion++
+        if (callback) callback(true)
+      } else {
+        if (callback) callback(false)
+      }
+    }).catch(err => {
+      console.warn('刷新副成员数据失败:', err)
+      if (callback) callback(false)
+    })
+  },
+
   globalData: {
     reminderInterval: null,
     pendingInviteCode: null,
-    subscribeTemplateId: ''  // 在微信后台配置订阅消息模板后填入
+    subscribeTemplateId: 'd18h4uvleZVoDoaJ2-MUGVHgtAsu1glwWx4LiZhWcXo',
+    isGuardian: false,
+    guardianData: null,
+    guardianOwnerName: '',
+    guardianChecked: true,
+    // 副成员相关
+    isSecondary: false,
+    secondaryData: null,
+    primaryOwnerName: '',
+    secondaryChecked: true,
+    secondaryRefreshInterval: null,
+    dataVersion: 0
   }
 })

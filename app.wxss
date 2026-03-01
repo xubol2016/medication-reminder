@@ -115,6 +115,111 @@ page {
 .text-danger { color: #e74c3c; }
 .text-muted { color: #a0a0b8; }
 
+/* 守护人只读模式横幅 */
+.guardian-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f0932b 0%, #f8b500 100%);
+  color: #ffffff;
+  padding: 20rpx 32rpx;
+  margin: 0 24rpx 20rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 6rpx 20rpx rgba(240, 147, 43, 0.3);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.guardian-banner-icon {
+  font-size: 20px;
+  margin-right: 12rpx;
+}
+
+.guardian-banner-text {
+  flex: 1;
+}
+
+/* 待服状态标记（守护人只读模式） */
+.status-pending {
+  color: #a0a0b8;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* 副成员只读模式横幅 */
+.secondary-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #4A90D9 0%, #5BA3EC 100%);
+  color: #ffffff;
+  padding: 20rpx 32rpx;
+  margin: 0 24rpx 20rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 6rpx 20rpx rgba(74, 144, 217, 0.3);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.secondary-banner-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.secondary-banner-icon {
+  font-size: 20px;
+  margin-right: 12rpx;
+}
+
+.secondary-banner-text {
+  flex: 1;
+}
+
+.refresh-btn {
+  background: rgba(255, 255, 255, 0.25);
+  padding: 12rpx 24rpx;
+  border-radius: 12rpx;
+  font-size: 15px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.refresh-btn:active {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* Bottom-Sheet Modal */
+.tp-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.tp-panel {
+  background: #ffffff;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 40rpx 32rpx calc(40rpx + env(safe-area-inset-bottom));
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.tp-panel-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a2e;
+  text-align: center;
+  margin-bottom: 24rpx;
+}
+
 /* 间距工具类 */
 .mt-20 { margin-top: 20rpx; }
 .mb-20 { margin-bottom: 20rpx; }

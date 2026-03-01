@@ -17,6 +17,7 @@
       <view class="action-btn action-invite" wx:if="{{!item.bound}}" bindtap="inviteGuardian" data-id="{{item.id}}">📨 邀请绑定</view>
       <view class="action-btn action-check" wx:if="{{!item.bound && item.inviteCode}}" bindtap="checkBindingStatus" data-id="{{item.id}}">🔄 刷新状态</view>
       <view class="action-btn action-subscribe" wx:if="{{item.bound}}" bindtap="requestSubscription">🔔 续订提醒</view>
+      <view class="guardian-quota {{item.quota > 3 ? 'quota-ok' : (item.quota > 0 ? 'quota-warn' : 'quota-empty')}}" wx:if="{{item.bound && item.quota != undefined}}">剩余{{item.quota}}次</view>
       <view class="action-btn action-edit" bindtap="editGuardian" data-id="{{item.id}}">✏️ 编辑</view>
       <view class="action-btn action-delete" bindtap="deleteGuardian" data-id="{{item.id}}" data-name="{{item.name}}">🗑️ 删除</view>
     </view>
@@ -46,6 +47,9 @@
           <view class="relation-option {{relationIndex === 3 ? 'selected' : ''}}" bindtap="selectRelation" data-index="3">孙女</view>
           <view class="relation-option {{relationIndex === 4 ? 'selected' : ''}}" bindtap="selectRelation" data-index="4">其他</view>
         </view>
+        <view class="custom-relation-wrap" wx:if="{{relationIndex === 4}}">
+          <input class="form-input custom-relation-input" placeholder="可输入具体关系，如：邻居、护工" value="{{customRelation}}" bindinput="onCustomRelationInput" maxlength="10" />
+        </view>
       </view>
       <view class="form-actions mt-20">
         <button class="btn-secondary" bindtap="cancelForm">取消</button>
@@ -65,11 +69,11 @@
       <view class="invite-steps">
         <view class="invite-step">
           <view class="step-num">1</view>
-          <view class="step-text">复制邀请码，发送给守护人</view>
+          <view class="step-text">点击"发送给守护人"直接分享，或复制邀请码手动发送</view>
         </view>
         <view class="invite-step">
           <view class="step-num">2</view>
-          <view class="step-text">守护人打开小程序，输入邀请码完成绑定</view>
+          <view class="step-text">守护人点击分享卡片打开小程序，即可自动绑定；或手动输入邀请码绑定</view>
         </view>
         <view class="invite-step">
           <view class="step-num">3</view>
@@ -77,15 +81,32 @@
         </view>
       </view>
       <view class="invite-actions">
-        <button class="btn-primary btn-copy" bindtap="copyInviteCode">📋 复制邀请码</button>
+        <button class="btn-primary btn-share" open-type="share">📨 发送给守护人</button>
+        <button class="btn-secondary btn-copy" bindtap="copyInviteCode">📋 复制邀请码</button>
       </view>
       <view class="invite-close" bindtap="closeInvitePanel">关闭</view>
     </view>
   </view>
 
+  <!-- 输入邀请码面板 - 底部弹窗 -->
+  <view class="tp-mask" wx:if="{{showInputCodePanel}}" bindtap="closeInputCodePanel">
+    <view class="tp-panel invite-panel" catchtap="noop">
+      <view class="form-title">🔗 输入邀请码</view>
+      <view class="form-group">
+        <view class="form-label">请粘贴家人发来的邀请码</view>
+        <input class="form-input" placeholder="在此粘贴邀请码" value="{{inputInviteCode}}" bindinput="onInviteCodeInput" />
+      </view>
+      <view class="form-actions mt-20">
+        <button class="btn-secondary" bindtap="closeInputCodePanel">取消</button>
+        <button class="btn-primary" bindtap="submitInviteCode">确认绑定</button>
+      </view>
+    </view>
+  </view>
+
   <!-- 添加按钮 -->
-  <view class="add-btn-wrap mt-20" wx:if="{{!showForm && !showInvitePanel}}">
+  <view class="add-btn-wrap mt-20" wx:if="{{!showForm && !showInvitePanel && !showInputCodePanel}}">
     <button class="btn-primary" bindtap="showAddForm">➕ 添加守护人</button>
+    <button class="btn-secondary btn-input-code" bindtap="showInputCodePanel">🔗 我是守护人，输入邀请码</button>
   </view>
 
   <!-- 使用提示 -->

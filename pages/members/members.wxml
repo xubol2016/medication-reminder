@@ -1,31 +1,38 @@
 <view class="container p-24">
+  <!-- 副成员提示条 -->
+  <view class="secondary-banner" wx:if="{{isSecondary}}">
+    <text class="secondary-banner-icon">👁️</text>
+    <text class="secondary-banner-text">正在查看 {{primaryOwnerName}} 的成员信息（只读）</text>
+  </view>
+
+  <!-- 成员管理标题 -->
+  <view class="section-title-row" wx:if="{{!isSecondary}}">
+    <text class="section-title">👥 家庭成员</text>
+  </view>
+
   <!-- 成员列表 -->
   <view class="card member-card" wx:for="{{members}}" wx:key="id">
     <view class="member-row">
       <view class="member-info">
         <view class="member-avatar">{{item.name[0]}}</view>
-        <view class="member-name">{{item.name}}</view>
+        <view class="member-detail">
+          <view class="member-name">{{item.name}}</view>
+          <view class="member-role" wx:if="{{!isSecondary}}">{{item.isSecondaryMember ? '副成员' : '主成员 · 可管理数据'}}</view>
+        </view>
       </view>
-      <view class="member-actions">
-        <view class="action-btn action-edit" bindtap="editMember" data-id="{{item.id}}">✏️ 编辑</view>
-        <view class="action-btn action-delete" bindtap="deleteMember" data-id="{{item.id}}" data-name="{{item.name}}">🗑️ 删除</view>
+      <view class="member-actions" wx:if="{{!isSecondary && !item.isSecondaryMember}}">
+        <view class="action-btn action-edit" bindtap="editMember" data-id="{{item.id}}">✏️</view>
+        <view class="action-btn action-delete" bindtap="deleteMember" data-id="{{item.id}}" data-name="{{item.name}}">🗑️</view>
       </view>
     </view>
   </view>
 
-  <!-- 空状态 -->
-  <view class="empty-state" wx:if="{{members.length === 0}}">
-    <view class="empty-icon">👨‍👩‍👧‍👦</view>
-    <view class="empty-text">还没有添加成员</view>
-    <view class="empty-hint">点击下方按钮添加家庭成员</view>
-  </view>
-
-  <!-- 添加/编辑表单 -->
-  <view class="card form-card" wx:if="{{showForm}}">
-    <view class="form-title">{{editingId ? '✏️ 编辑成员' : '➕ 添加成员'}}</view>
+  <!-- 添加/编辑主成员表单 -->
+  <view class="card form-card" wx:if="{{showForm && !isSecondary}}">
+    <view class="form-title">{{editingId ? '✏️ 编辑主成员' : '➕ 添加主成员'}}</view>
     <view class="form-group">
       <view class="form-label">姓名/称呼</view>
-      <input class="form-input" placeholder="如：爸爸、妈妈" value="{{formName}}" bindinput="onNameInput" maxlength="10" />
+      <input class="form-input" placeholder="如：爸爸" value="{{formName}}" bindinput="onNameInput" maxlength="10" />
     </view>
     <view class="form-actions mt-20">
       <button class="btn-secondary" bindtap="cancelForm">取消</button>
@@ -33,8 +40,79 @@
     </view>
   </view>
 
-  <!-- 添加按钮 -->
-  <view class="add-btn-wrap mt-20" wx:if="{{!showForm}}">
-    <button class="btn-primary" bindtap="showAddForm">➕ 添加成员</button>
+  <!-- 添加主成员按钮（只有没有主成员时显示） -->
+  <view class="secondary-btn-wrap mt-20" wx:if="{{!showForm && !isSecondary && !hasPrimaryMember}}">
+    <button class="btn-primary" bindtap="showAddForm">➕ 添加主成员</button>
+  </view>
+
+  <!-- ===== 副成员管理区域（仅主成员可见） ===== -->
+  <block wx:if="{{!isSecondary}}">
+    <view class="section-divider"></view>
+    <view class="section-title-row">
+      <text class="section-title">👥 副成员管理</text>
+    </view>
+    <view class="section-hint">副成员会加入家庭成员列表（可分配药物），同时可邀请对方只读查看用药信息。</view>
+
+    <!-- 已添加的副成员列表 -->
+    <view class="card secondary-card" wx:for="{{secondaryMembers}}" wx:key="id">
+      <view class="secondary-row">
+        <view class="secondary-info">
+          <view class="secondary-status-dot {{item.status === 'bound' ? 'dot-bound' : 'dot-pending'}}"></view>
+          <text class="secondary-name">{{item.name || '副成员'}}</text>
+          <text class="secondary-status-label">{{item.status === 'bound' ? '已绑定' : '待接受'}}</text>
+        </view>
+        <view class="secondary-actions">
+          <view class="action-btn action-edit" wx:if="{{item.status === 'pending'}}" bindtap="checkSecondaryStatus" data-code="{{item.inviteCode}}">检查</view>
+          <view class="action-btn action-delete" bindtap="deleteSecondaryMember" data-code="{{item.inviteCode}}" data-name="{{item.name}}">🗑️</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 添加副成员姓名表单 -->
+    <view class="card form-card" wx:if="{{showSecondaryForm}}">
+      <view class="form-title">➕ 添加副成员</view>
+      <view class="form-group">
+        <view class="form-label">姓名/称呼</view>
+        <input class="form-input" placeholder="如：妈妈、女儿" value="{{secondaryFormName}}" bindinput="onSecondaryNameInput" maxlength="10" />
+      </view>
+      <view class="form-actions mt-20">
+        <button class="btn-secondary" bindtap="cancelSecondaryForm">取消</button>
+        <button class="btn-primary" bindtap="saveSecondaryForm">下一步</button>
+      </view>
+    </view>
+
+    <!-- 添加副成员 + 输入邀请码 -->
+    <view class="secondary-btn-wrap mt-20" wx:if="{{!showSecondaryForm}}">
+      <button class="btn-primary" bindtap="addSecondaryMember">➕ 添加副成员</button>
+      <button class="btn-secondary mt-12" bindtap="showInputCodePanel">📥 我是副成员，输入邀请码</button>
+    </view>
+  </block>
+
+  <!-- 邀请面板 -->
+  <view class="tp-mask" wx:if="{{showInvitePanel}}" catchtap="closeInvitePanel">
+    <view class="tp-panel" catchtap="noop">
+      <view class="tp-panel-title">邀请副成员</view>
+      <view class="invite-code-display">{{inviteCode}}</view>
+      <view class="invite-tips">请将邀请码发送给对方，或通过分享卡片邀请。</view>
+      <view class="form-actions mt-20">
+        <button class="btn-secondary" bindtap="copyInviteCode">📋 复制邀请码</button>
+        <button class="btn-primary" open-type="share">📤 分享卡片</button>
+      </view>
+      <button class="btn-secondary mt-20" bindtap="closeInvitePanel">关闭</button>
+    </view>
+  </view>
+
+  <!-- 输入邀请码面板 -->
+  <view class="tp-mask" wx:if="{{showInputCodePanel}}" catchtap="closeInputCodePanel">
+    <view class="tp-panel" catchtap="noop">
+      <view class="tp-panel-title">输入邀请码</view>
+      <view class="form-group">
+        <input class="form-input" placeholder="请粘贴邀请码" value="{{inputInviteCode}}" bindinput="onInviteCodeInput" />
+      </view>
+      <view class="form-actions mt-20">
+        <button class="btn-secondary" bindtap="closeInputCodePanel">取消</button>
+        <button class="btn-primary" bindtap="submitInviteCode">确认绑定</button>
+      </view>
+    </view>
   </view>
 </view>

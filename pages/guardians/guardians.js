@@ -10,10 +10,14 @@ Page({
     editingId: null,
     relationOptions: ['儿子', '女儿', '孙子', '孙女', '其他'],
     relationIndex: 0,
+    customRelation: '',
     // 邀请绑定相关
     showInvitePanel: false,
     currentInviteGuardianId: null,
-    inviteCode: ''
+    inviteCode: '',
+    // 输入邀请码相关
+    showInputCodePanel: false,
+    inputInviteCode: ''
   },
 
   onShow() {
@@ -23,36 +27,79 @@ Page({
   onLoad(options) {
     // 检查是否通过邀请链接直接打开此页面
     if (options && options.inviteCode) {
-      this.handleInviteAccept(options.inviteCode)
-      return
+      const code = options.inviteCode
+      // 只处理 grd_ 前缀或无前缀的邀请码（兼容旧邀请码）
+      if (code.indexOf('sec_') !== 0) {
+        this.handleInviteAccept(code)
+        return
+      }
     }
     // 检查是否有待处理的邀请码（从 app.js 传递）
     const app = getApp()
     if (app.globalData.pendingInviteCode) {
-      this.handleInviteAccept(app.globalData.pendingInviteCode)
-      app.globalData.pendingInviteCode = null
+      const code = app.globalData.pendingInviteCode
+      // 只处理 grd_ 前缀或无前缀的邀请码
+      if (code.indexOf('sec_') !== 0) {
+        app.globalData.pendingInviteCode = null
+        this.handleInviteAccept(code)
+      }
     }
   },
 
   loadGuardians() {
     this.setData({ guardians: getGuardians() })
+    this.loadGuardianQuotas()
+  },
+
+  loadGuardianQuotas() {
+    if (!wx.cloud) return
+    const app = getApp()
+    const templateId = app.globalData.subscribeTemplateId
+    if (!templateId) return
+
+    const guardians = this.data.guardians
+    if (guardians.filter(g => g.bound && g.openId).length === 0) return
+
+    wx.cloud.callFunction({
+      name: 'bindGuardian',
+      data: { action: 'getQuota', templateId }
+    }).then(res => {
+      if (!res.result || !res.result.success) return
+      const quotas = res.result.guardianQuotas || {}
+      const updated = guardians.map(g => {
+        if (g.bound && g.openId && quotas[g.openId] !== undefined) {
+          g.quota = quotas[g.openId]
+        } else if (g.bound && g.openId) {
+          g.quota = 0
+        }
+        return g
+      })
+      this.setData({ guardians: updated })
+    }).catch(() => {})
   },
 
   showAddForm() {
-    this.setData({ showForm: true, formName: '', formRelation: '', editingId: null, relationIndex: 0 })
+    this.setData({ showForm: true, formName: '', formRelation: '', editingId: null, relationIndex: 0, customRelation: '' })
   },
 
   editGuardian(e) {
     const id = e.currentTarget.dataset.id
     const guardian = this.data.guardians.find(g => g.id === id)
     if (guardian) {
-      const relationIndex = this.data.relationOptions.indexOf(guardian.relation)
+      let relationIndex = this.data.relationOptions.indexOf(guardian.relation)
+      let customRelation = ''
+      if (relationIndex < 0) {
+        // 自定义关系（不在预设列表中）
+        relationIndex = 4
+        customRelation = guardian.relation
+      }
       this.setData({
         showForm: true,
         formName: guardian.name,
         formRelation: guardian.relation,
         editingId: id,
-        relationIndex: relationIndex >= 0 ? relationIndex : 4
+        relationIndex,
+        customRelation
       })
     }
   },
@@ -89,11 +136,16 @@ Page({
   },
 
   selectRelation(e) {
-    this.setData({ relationIndex: parseInt(e.currentTarget.dataset.index) })
+    const index = parseInt(e.currentTarget.dataset.index)
+    this.setData({ relationIndex: index, customRelation: index === 4 ? this.data.customRelation : '' })
+  },
+
+  onCustomRelationInput(e) {
+    this.setData({ customRelation: e.detail.value })
   },
 
   cancelForm() {
-    this.setData({ showForm: false, formName: '', formRelation: '', editingId: null })
+    this.setData({ showForm: false, formName: '', formRelation: '', editingId: null, customRelation: '' })
   },
 
   saveForm() {
@@ -103,7 +155,9 @@ Page({
       return
     }
 
-    const relation = this.data.relationOptions[this.data.relationIndex]
+    const relation = this.data.relationIndex === 4 && this.data.customRelation.trim()
+      ? this.data.customRelation.trim()
+      : this.data.relationOptions[this.data.relationIndex]
     const guardian = {
       name,
       relation,
@@ -125,7 +179,7 @@ Page({
     }
 
     saveGuardian(guardian)
-    this.setData({ showForm: false, formName: '', formRelation: '', editingId: null })
+    this.setData({ showForm: false, formName: '', formRelation: '', editingId: null, customRelation: '' })
     this.loadGuardians()
     wx.showToast({ title: '已保存', icon: 'success' })
   },
@@ -134,8 +188,8 @@ Page({
   inviteGuardian(e) {
     const id = e.currentTarget.dataset.id
 
-    // 本地生成邀请码（不依赖云函数）
-    const inviteCode = generateId() + '_' + Date.now().toString(36)
+    // 本地生成邀请码（不依赖云函数），加 grd_ 前缀区分副成员邀请
+    const inviteCode = 'grd_' + generateId() + '_' + Date.now().toString(36)
 
     // 保存邀请码到本地守护人记录
     const guardian = getGuardianById(id)
@@ -206,15 +260,40 @@ Page({
     }).then(res => {
       wx.hideLoading()
       if (res.result && res.result.success) {
+        const app = getApp()
+        // 立即加载守护人数据并切换角色
+        wx.cloud.callFunction({ name: 'getOwnerData' }).then(dataRes => {
+          if (dataRes.result && dataRes.result.success) {
+            app.switchToGuardian(
+              {
+                members: dataRes.result.members || [],
+                medicines: dataRes.result.medicines || [],
+                records: dataRes.result.records || []
+              },
+              dataRes.result.ownerName || '家人'
+            )
+          }
+        }).catch(() => {})
+
         wx.showModal({
           title: '绑定成功 🎉',
-          content: '您已成功成为守护人！当家人漏服药物时，您将收到微信提醒。',
+          content: '您已成功成为守护人！当家人漏服药物时，您将收到微信提醒。现在可以在首页查看家人的用药情况。',
           confirmText: '授权提醒',
           cancelText: '稍后',
           success: (modalRes) => {
             if (modalRes.confirm) {
               this.requestSubscription()
             }
+          }
+        })
+      } else if (res.result && res.result.alreadyBound) {
+        wx.showModal({
+          title: '已绑定',
+          content: '守护人的邀请已被绑定，即将前往首页查看用药信息。',
+          showCancel: false,
+          confirmText: '去首页',
+          success: () => {
+            wx.switchTab({ url: '/pages/index/index' })
           }
         })
       } else {
@@ -245,7 +324,7 @@ Page({
             wx.cloud.callFunction({
               name: 'bindGuardian',
               data: { action: 'subscribe', templateId }
-            }).catch(() => {})
+            }).then(() => this.loadGuardianQuotas()).catch(() => {})
           }
         }
       },
@@ -280,6 +359,29 @@ Page({
       wx.hideLoading()
       wx.showToast({ title: '检查失败', icon: 'none' })
     })
+  },
+
+  // 显示输入邀请码面板
+  showInputCodePanel() {
+    this.setData({ showInputCodePanel: true, inputInviteCode: '' })
+  },
+
+  closeInputCodePanel() {
+    this.setData({ showInputCodePanel: false, inputInviteCode: '' })
+  },
+
+  onInviteCodeInput(e) {
+    this.setData({ inputInviteCode: e.detail.value })
+  },
+
+  submitInviteCode() {
+    const code = this.data.inputInviteCode.trim()
+    if (!code) {
+      wx.showToast({ title: '请输入邀请码', icon: 'none' })
+      return
+    }
+    this.setData({ showInputCodePanel: false, inputInviteCode: '' })
+    this.handleInviteAccept(code)
   },
 
   noop() {}

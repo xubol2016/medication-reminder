@@ -38,10 +38,21 @@
   box-shadow: 0 6rpx 16rpx rgba(74, 144, 217, 0.3);
 }
 
+.member-detail {
+  display: flex;
+  flex-direction: column;
+}
+
 .member-name {
   font-size: 22px;
   font-weight: 600;
   color: #1a1a2e;
+}
+
+.member-role {
+  font-size: 14px;
+  color: #4A90D9;
+  margin-top: 4rpx;
 }
 
 .member-actions {
@@ -71,28 +82,7 @@
   background: linear-gradient(135deg, #fef0f0, #fde8e8);
 }
 
-/* 空状态 */
-.empty-state {
-  text-align: center;
-  padding: 100rpx 0;
-}
-
-.empty-icon {
-  font-size: 48px;
-  margin-bottom: 20rpx;
-}
-
-.empty-text {
-  font-size: 22px;
-  color: #a0a0b8;
-  margin-bottom: 12rpx;
-  font-weight: 500;
-}
-
-.empty-hint {
-  font-size: 18px;
-  color: #c8c8d8;
-}
+/* (empty-state removed, using inline button instead) */
 
 /* 表单 */
 .form-card {
@@ -116,6 +106,122 @@
   flex: 1;
 }
 
-.add-btn-wrap {
+/* (add-btn-wrap removed, using secondary-btn-wrap instead) */
+
+/* 副成员提示条 */
+.secondary-banner {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #e8f4f8, #d4ecf7);
+  border-radius: 16rpx;
+  padding: 24rpx 28rpx;
+  margin-bottom: 20rpx;
+}
+
+.secondary-banner-icon {
+  font-size: 24px;
+  margin-right: 16rpx;
+}
+
+.secondary-banner-text {
+  font-size: 17px;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+/* 副成员管理区域 */
+.section-divider {
+  height: 2rpx;
+  background: linear-gradient(90deg, transparent, #d0d0e0, transparent);
+  margin: 40rpx 0 30rpx;
+}
+
+.section-title-row {
+  margin-bottom: 12rpx;
+}
+
+.section-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.section-hint {
+  font-size: 16px;
+  color: #a0a0b8;
+  margin-bottom: 20rpx;
+}
+
+.secondary-card {
+  margin-top: 16rpx;
+}
+
+.secondary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.secondary-info {
+  display: flex;
+  align-items: center;
+}
+
+.secondary-status-dot {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  margin-right: 16rpx;
+}
+
+.dot-bound {
+  background: #2ecc71;
+}
+
+.dot-pending {
+  background: #f0932b;
+}
+
+.secondary-name {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin-right: 12rpx;
+}
+
+.secondary-status-label {
+  font-size: 14px;
+  color: #a0a0b8;
+}
+
+.secondary-actions {
+  display: flex;
+  gap: 18rpx;
+}
+
+.secondary-btn-wrap {
   padding: 0 24rpx;
+}
+
+.mt-12 {
+  margin-top: 12rpx;
+}
+
+/* 邀请面板 */
+.invite-code-display {
+  background: #f5f7fa;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: #4A90D9;
+  word-break: break-all;
+  margin: 20rpx 0;
+}
+
+.invite-tips {
+  font-size: 16px;
+  color: #a0a0b8;
+  text-align: center;
 }

@@ -28,8 +28,8 @@
         <view class="time-tag" wx:for="{{med.times}}" wx:for-item="t" wx:key="*this">🕐 {{t}}</view>
       </view>
       <view class="med-actions">
-        <view class="action-btn action-edit" bindtap="editMedicine" data-id="{{med.id}}">✏️ 编辑</view>
-        <view class="action-btn action-delete" bindtap="deleteMedicine" data-id="{{med.id}}" data-name="{{med.name}}">🗑️ 删除</view>
+        <view class="action-btn action-edit" wx:if="{{!isReadOnly}}" bindtap="editMedicine" data-id="{{med.id}}">✏️ 编辑</view>
+        <view class="action-btn action-delete" wx:if="{{!isReadOnly}}" bindtap="deleteMedicine" data-id="{{med.id}}" data-name="{{med.name}}">🗑️ 删除</view>
         <view class="action-btn action-tip" wx:if="{{med.hasTip}}" bindtap="viewMedicineTip" data-id="{{med.id}}">💡 提示</view>
       </view>
     </view>
@@ -37,11 +37,11 @@
 
   <view class="empty-state" wx:if="{{totalCount === 0}}">
     <view class="empty-icon">💊</view>
-    <view class="empty-text">还没有添加药物</view>
-    <view class="empty-hint">点击下方按钮添加药物</view>
+    <view class="empty-text">{{isReadOnly ? '暂无药物信息' : '还没有添加药物'}}</view>
+    <view class="empty-hint" wx:if="{{!isReadOnly}}">点击下方按钮添加药物</view>
   </view>
 
-  <view class="add-btn-wrap mt-20">
+  <view class="add-btn-wrap mt-20" wx:if="{{!isReadOnly}}">
     <button class="btn-primary" bindtap="showAddForm">➕ 添加药物</button>
   </view>
 

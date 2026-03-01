@@ -34,20 +34,21 @@ Tab 栏（自定义 `custom-tab-bar/`）包含前三个页面，后三个通过 
 
 ### 核心工具模块 (`utils/`)
 
-- **`storage.js`** — 封装 `wx.getStorageSync/setStorageSync`，所有写入为**全量替换**（读取完整数组 → 修改 → 写回），无局部更新。`saveMember/saveMedicine/saveRecord/saveGuardian` 均为 upsert（有 `id` 则更新，无 `id` 则追加）。删除成员时级联删除关联药品和记录。
+- **`storage.js`** — 封装 `wx.getStorageSync/setStorageSync`，所有写入为**全量替换**（读取完整数组 → 修改 → 写回），无局部更新。`saveMember/saveMedicine/saveRecord/saveGuardian` 均为 upsert（有 `id` 则更新，无 `id` 则追加）。删除成员时级联删除关联药品和记录。**守护人模式**: 当 `app.globalData.isGuardian === true` 时，读取函数从 `app.globalData.guardianData` 取数据而非本地 Storage，所有写入操作被禁用（只读）。
 - **`reminder.js`** — 核心业务逻辑：
   - `checkMissedMedications()` — 将过去时间点的未记录项**写入 storage** 标记为 `missed`，返回新增漏服列表
   - `getTodayMedStatus()` — **不写 storage**，实时计算今日各药物状态（`pending`/`taken`/`missed`），供首页展示
   - `checkCurrentReminders()` — 精确匹配当前分钟（`time === getNow()`），返回需提醒项
 - **`date.js`** — 日期格式化（YYYY-MM-DD / HH:mm）、`compareTime()`、日历辅助函数、`generateId()`。
-- **`cloud-sync.js`** — 将本地药品单向同步到云数据库 `user_medicines`，在成员/药品变更后调用。
+- **`cloud-sync.js`** — 本地数据单向同步到云端。`syncMedicinesToCloud()` 同步药品、`syncMembersToCloud()` 同步成员、`syncRecordsToCloud()` 同步最近 30 天记录、`syncAllToCloud()` 聚合调用前三者。`app.js` 的 `onShow` 中调用 `syncAllToCloud()`。
 - **`notify.js`** — 检测到漏服时，通过云函数 `sendNotification` 向已绑定守护人发送订阅消息。
+- **`medicine-tips.js`** — 本地药物健康提示数据库，包含 60+ 种常见老年人用药的精确匹配（含商品名/别名）和关键字分类匹配（如"他汀"、"沙坦"等药名后缀），`queryTip(name)` 返回 `{ effect, usage, cautions[], tip }`。作为 `getMedicineTip` 云函数的本地降级方案。
 
 ### 数据模型
 
 ```
 members:   { id, name }
-medicines: { id, memberId, name, dosage, times: string[], enabled, healthTip?: { effect, usage, cautions: string[], tip, queriedAt } }
+medicines: { id, memberId, name, dosage, times: string[], enabled, healthTip?: { effect, usage, cautions: string[], tip, queriedAt }, drugNames?: string[], drugTimes?: string[][], drugDosages?: string[] }
 records:   { id, medicineId, memberId, date, time, status: "taken"|"missed"|"pending", takenAt }
 guardians: { id, name, relation, bound, openId, subscribedCount, inviteCode }
 ```
@@ -59,7 +60,8 @@ guardians: { id, name, relation, bound, openId, subscribedCount, inviteCode }
 | 云函数 | 功能 |
 |--------|------|
 | `getOpenId` | 获取当前用户 openId |
-| `bindGuardian` | 三合一：`action=bind`（守护人接受邀请）/ `action=unbind`（删除绑定）/ `action=subscribe`（记录订阅配额 +1，用户端和守护人端均调用此 action）|
+| `bindGuardian` | 四合一：`action=bind`（守护人接受邀请）/ `action=unbind`（删除绑定）/ `action=subscribe`（记录订阅配额 +1）/ `action=getQuota`（查询当前用户及所有已绑定守护人的订阅配额）|
+| `getOwnerData` | 守护人端调用，验证调用者的绑定关系后，返回被守护人的成员、药品、记录数据（从 `user_members` / `user_medicines` / `user_records` 集合读取）|
 | `sendNotification` | 向所有已绑定守护人推送订阅消息（检查 `subscription_tokens` 余量，发送后扣减）|
 | `getMedicineTip` | 调用 Anthropic Claude API，根据药物名称生成适合老年人阅读的健康小提示（`{ effect, usage, cautions[], tip }`），用内置 `https` 模块请求，无额外依赖 |
 | `checkMedReminder` / `checkMissedReminder` / `confirmTaken` | 定时触发备用，当前小程序端已自行处理 |
@@ -72,13 +74,20 @@ guardians: { id, name, relation, bound, openId, subscribedCount, inviteCode }
 
 ### 云数据库集合
 
-- `user_medicines` — 本地药品镜像，供守护人端读取
+- `user_members` — 本地成员镜像
+- `user_medicines` — 本地药品镜像
+- `user_records` — 最近 30 天记录镜像
 - `guardian_bindings` — `{ inviteCode, ownerOpenId, guardianOpenId, status: "pending"|"bound" }`
 - `subscription_tokens` — `{ guardianOpenId, templateId, remaining }`（每次 subscribe action +1，发消息 -1）
+- `notification_log` — 通知发送日志
+
+### 双模式架构（Owner / Guardian）
+
+应用支持两种角色：**数据主人（Owner）**和**守护人（Guardian）**。`app.js` 的 `onShow` 通过 `getOwnerData` 云函数探测当前用户是否为已绑定守护人。关键 `globalData` 字段：`isGuardian`（布尔）、`guardianData`（缓存的被守护人数据，含 members/medicines/records）、`guardianOwnerName`（被守护人名称）、`guardianChecked`（探测完成标志）。Guardian 模式下 `storage.js` 的读取函数返回 `guardianData` 中的数据，写入操作被禁用。
 
 ### 提醒生命周期
 
-`App.onShow()` → `checkMissedMedications()` → 若有新漏服则 `notifyGuardians()` → `syncMedicinesToCloud()` → 首页 `startReminder()` 每 60 秒轮询 → `checkCurrentReminders()` 精确匹配当前分钟 → 弹出模态框 → 记录写 storage → `onHide()` 清除定时器。全局 `app.globalData.reminderInterval` 管理定时器。
+`App.onShow()` → 检测身份（owner 或 guardian）→ **Owner 流程**: `checkMissedMedications()` → 若有新漏服则 `notifyGuardians()` → `syncAllToCloud()` → 首页 `startReminder()` 每 60 秒轮询 → `checkCurrentReminders()` 精确匹配当前分钟 → 弹出模态框 → 记录写 storage → `onHide()` 清除定时器。**Guardian 流程**: 调用 `getOwnerData` 云函数获取被守护人数据，存入 `globalData.guardianData`，各页面以只读模式展示。全局 `app.globalData.reminderInterval` 管理定时器。
 
 **首页数据加载顺序**: `onShow` 先调 `checkMissedMedications()`（写漏服记录到 storage），再调 `getTodayMedStatus()`（读取显示）。两者均以 `enabled` 药品为范围。
 
