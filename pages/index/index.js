@@ -30,6 +30,7 @@ Page({
 
   _lastDataVersion: -1,
   _secondaryReloadTimer: null,
+  _guardianReloadTimer: null,
 
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
@@ -56,6 +57,7 @@ Page({
       this.startSecondaryAutoReload()
     } else if (isGuardian) {
       this.loadData()
+      this.startGuardianAutoReload()
     } else {
       checkMissedMedications()
       this.loadData()
@@ -66,6 +68,7 @@ Page({
   onHide() {
     this.stopReminder()
     this.stopSecondaryAutoReload()
+    this.stopGuardianAutoReload()
   },
 
   loadData() {
@@ -170,6 +173,40 @@ Page({
         wx.showToast({ title: '刷新失败', icon: 'none' })
       }
     })
+  },
+
+  // 守护人手动刷新
+  guardianManualRefresh() {
+    wx.showLoading({ title: '刷新中...' })
+    getApp().refreshGuardianData((success) => {
+      wx.hideLoading()
+      if (success) {
+        this.loadData()
+        wx.showToast({ title: '已刷新', icon: 'success' })
+      } else {
+        wx.showToast({ title: '刷新失败', icon: 'none' })
+      }
+    })
+  },
+
+  // 守护人自动重新加载（监听 dataVersion 变化）
+  startGuardianAutoReload() {
+    this.stopGuardianAutoReload()
+    const app = getApp()
+    this._lastDataVersion = app.globalData.dataVersion
+    this._guardianReloadTimer = setInterval(() => {
+      if (app.globalData.dataVersion !== this._lastDataVersion) {
+        this._lastDataVersion = app.globalData.dataVersion
+        this.loadData()
+      }
+    }, 2000)
+  },
+
+  stopGuardianAutoReload() {
+    if (this._guardianReloadTimer) {
+      clearInterval(this._guardianReloadTimer)
+      this._guardianReloadTimer = null
+    }
   },
 
   // 副成员自动重新加载（监听 dataVersion 变化）

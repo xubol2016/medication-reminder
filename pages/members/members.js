@@ -8,6 +8,7 @@ Page({
     formName: '',
     editingId: null,
     isSecondary: false,
+    isGuardian: false,
     primaryOwnerName: '',
     // 副成员管理相关
     secondaryMembers: [],
@@ -39,8 +40,10 @@ Page({
   onShow() {
     const app = getApp()
     const isSecondary = app.globalData.isSecondary === true
+    const isGuardian = app.globalData.isGuardian === true
     this.setData({
       isSecondary,
+      isGuardian,
       primaryOwnerName: isSecondary ? app.globalData.primaryOwnerName : ''
     })
     this.loadMembers()

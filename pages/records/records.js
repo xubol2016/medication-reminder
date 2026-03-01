@@ -38,6 +38,7 @@ Page({
 
   _lastDataVersion: -1,
   _secondaryReloadTimer: null,
+  _guardianReloadTimer: null,
 
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
@@ -63,11 +64,14 @@ Page({
 
     if (this.data.isSecondary) {
       this.startSecondaryAutoReload()
+    } else if (this.data.isGuardian) {
+      this.startGuardianAutoReload()
     }
   },
 
   onHide() {
     this.stopSecondaryAutoReload()
+    this.stopGuardianAutoReload()
   },
 
   // 副成员手动刷新
@@ -104,6 +108,43 @@ Page({
     if (this._secondaryReloadTimer) {
       clearInterval(this._secondaryReloadTimer)
       this._secondaryReloadTimer = null
+    }
+  },
+
+  // 守护人手动刷新
+  guardianManualRefresh() {
+    wx.showLoading({ title: '刷新中...' })
+    getApp().refreshGuardianData((success) => {
+      wx.hideLoading()
+      if (success) {
+        this.setData({ members: getMembers() })
+        this.buildCalendar()
+        this.loadDayRecords()
+        wx.showToast({ title: '已刷新', icon: 'success' })
+      } else {
+        wx.showToast({ title: '刷新失败', icon: 'none' })
+      }
+    })
+  },
+
+  startGuardianAutoReload() {
+    this.stopGuardianAutoReload()
+    const app = getApp()
+    this._lastDataVersion = app.globalData.dataVersion
+    this._guardianReloadTimer = setInterval(() => {
+      if (app.globalData.dataVersion !== this._lastDataVersion) {
+        this._lastDataVersion = app.globalData.dataVersion
+        this.setData({ members: getMembers() })
+        this.buildCalendar()
+        this.loadDayRecords()
+      }
+    }, 2000)
+  },
+
+  stopGuardianAutoReload() {
+    if (this._guardianReloadTimer) {
+      clearInterval(this._guardianReloadTimer)
+      this._guardianReloadTimer = null
     }
   },
 

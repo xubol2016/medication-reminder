@@ -1,8 +1,11 @@
 <view class="container">
   <!-- 守护人提示条 -->
   <view class="guardian-banner" wx:if="{{isGuardian}}">
-    <text class="guardian-banner-icon">👁️</text>
-    <text class="guardian-banner-text">正在查看 {{guardianOwnerName}} 的用药记录（只读）</text>
+    <view class="guardian-banner-left">
+      <text class="guardian-banner-icon">👁️</text>
+      <text class="guardian-banner-text">正在查看 {{guardianOwnerName}} 的用药记录（只读）</text>
+    </view>
+    <view class="refresh-btn" bindtap="guardianManualRefresh">🔄 刷新</view>
   </view>
 
   <!-- 副成员提示条 -->

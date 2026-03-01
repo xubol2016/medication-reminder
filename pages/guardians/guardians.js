@@ -21,6 +21,12 @@ Page({
   },
 
   onShow() {
+    const app = getApp()
+    if (app.globalData.isGuardian === true) {
+      wx.showToast({ title: '守护人无权管理', icon: 'none' })
+      wx.switchTab({ url: '/pages/index/index' })
+      return
+    }
     this.loadGuardians()
   },
 
@@ -277,13 +283,14 @@ Page({
 
         wx.showModal({
           title: '绑定成功 🎉',
-          content: '您已成功成为守护人！当家人漏服药物时，您将收到微信提醒。现在可以在首页查看家人的用药情况。',
+          content: '您已成功成为守护人！当家人漏服药物时，您将收到微信提醒。',
           confirmText: '授权提醒',
-          cancelText: '稍后',
+          cancelText: '去首页',
           success: (modalRes) => {
             if (modalRes.confirm) {
               this.requestSubscription()
             }
+            wx.switchTab({ url: '/pages/index/index' })
           }
         })
       } else if (res.result && res.result.alreadyBound) {

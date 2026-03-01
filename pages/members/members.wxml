@@ -20,7 +20,7 @@
           <view class="member-role" wx:if="{{!isSecondary}}">{{item.isSecondaryMember ? '副成员' : '主成员 · 可管理数据'}}</view>
         </view>
       </view>
-      <view class="member-actions" wx:if="{{!isSecondary && !item.isSecondaryMember}}">
+      <view class="member-actions" wx:if="{{!isSecondary && !isGuardian && !item.isSecondaryMember}}">
         <view class="action-btn action-edit" bindtap="editMember" data-id="{{item.id}}">✏️</view>
         <view class="action-btn action-delete" bindtap="deleteMember" data-id="{{item.id}}" data-name="{{item.name}}">🗑️</view>
       </view>
@@ -45,8 +45,8 @@
     <button class="btn-primary" bindtap="showAddForm">➕ 添加主成员</button>
   </view>
 
-  <!-- ===== 副成员管理区域（仅主成员可见） ===== -->
-  <block wx:if="{{!isSecondary}}">
+  <!-- ===== 副成员管理区域（仅主成员可见，守护人不可见） ===== -->
+  <block wx:if="{{!isSecondary && !isGuardian}}">
     <view class="section-divider"></view>
     <view class="section-title-row">
       <text class="section-title">👥 副成员管理</text>

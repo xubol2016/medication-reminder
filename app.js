@@ -64,6 +64,7 @@ App({
     } else if (role === 'guardian') {
       // 守护人：刷新云端数据
       this.refreshGuardianData()
+      this.startGuardianRefresh()
     } else {
       // 主成员：正常流程
       this.runOwnerFlow()
@@ -72,6 +73,7 @@ App({
 
   onHide() {
     this.stopSecondaryRefresh()
+    this.stopGuardianRefresh()
   },
 
   // 主成员的正常流程
@@ -124,6 +126,7 @@ App({
     this.globalData.guardianOwnerName = ownerName
     this.globalData.guardianChecked = true
     this.globalData.secondaryChecked = true
+    this.startGuardianRefresh()
   },
 
   // 重置为主成员角色
@@ -136,6 +139,7 @@ App({
     this.globalData.guardianChecked = true
     this.globalData.secondaryChecked = true
     this.stopSecondaryRefresh()
+    this.stopGuardianRefresh()
   },
 
   // 刷新守护人端的云端数据
@@ -152,6 +156,7 @@ App({
           records: res.result.records || []
         }
         this.globalData.guardianOwnerName = res.result.ownerName || '家人'
+        this.globalData.dataVersion++
         if (callback) callback(true)
       } else {
         if (callback) callback(false)
@@ -160,6 +165,22 @@ App({
       console.warn('刷新守护人数据失败:', err)
       if (callback) callback(false)
     })
+  },
+
+  // 启动守护人数据自动刷新（60秒间隔）
+  startGuardianRefresh() {
+    this.stopGuardianRefresh()
+    this.globalData.guardianRefreshInterval = setInterval(() => {
+      this.refreshGuardianData()
+    }, 60000)
+  },
+
+  // 停止守护人自动刷新
+  stopGuardianRefresh() {
+    if (this.globalData.guardianRefreshInterval) {
+      clearInterval(this.globalData.guardianRefreshInterval)
+      this.globalData.guardianRefreshInterval = null
+    }
   },
 
   // 启动副成员数据自动刷新（60秒间隔）
@@ -211,6 +232,7 @@ App({
     guardianData: null,
     guardianOwnerName: '',
     guardianChecked: true,
+    guardianRefreshInterval: null,
     // 副成员相关
     isSecondary: false,
     secondaryData: null,
