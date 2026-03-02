@@ -16,7 +16,7 @@
     <view class="guardian-actions">
       <view class="action-btn action-invite" wx:if="{{!item.bound}}" bindtap="inviteGuardian" data-id="{{item.id}}">📨 邀请绑定</view>
       <view class="action-btn action-check" wx:if="{{!item.bound && item.inviteCode}}" bindtap="checkBindingStatus" data-id="{{item.id}}">🔄 刷新状态</view>
-      <view class="action-btn action-subscribe" wx:if="{{item.bound}}" bindtap="requestSubscription">🔔 续订提醒</view>
+      <view class="action-btn action-subscribe" wx:if="{{item.bound}}" bindtap="showQuotaTip">🔔 提醒配额</view>
       <view class="guardian-quota {{item.quota > 3 ? 'quota-ok' : (item.quota > 0 ? 'quota-warn' : 'quota-empty')}}" wx:if="{{item.bound && item.quota != undefined}}">剩余{{item.quota}}次</view>
       <view class="action-btn action-edit" bindtap="editGuardian" data-id="{{item.id}}">✏️ 编辑</view>
       <view class="action-btn action-delete" bindtap="deleteGuardian" data-id="{{item.id}}" data-name="{{item.name}}">🗑️ 删除</view>
@@ -113,7 +113,7 @@
   <view class="tips card" wx:if="{{guardians.length > 0}}">
     <view class="tips-title">💡 使用提示</view>
     <view class="tips-text">· 守护人需要打开分享链接完成绑定</view>
-    <view class="tips-text">· 每次授权可接收一条漏服提醒</view>
-    <view class="tips-text">· 守护人可多次点击"续订提醒"增加次数</view>
+    <view class="tips-text">· 提醒配额由守护人在自己的小程序中授权获取</view>
+    <view class="tips-text">· 守护人进入设置页可点击「增加提醒配额」增加次数</view>
   </view>
 </view>

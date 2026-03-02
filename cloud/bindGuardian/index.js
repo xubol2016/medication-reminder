@@ -89,6 +89,8 @@ exports.main = async (event, context) => {
     const guardianQuotas = {}
     for (const binding of bindings) {
       if (binding.guardianOpenId === myOpenId) continue
+      // 按 guardianOpenId 去重，避免重复绑定记录导致配额重复累加
+      if (guardianQuotas[binding.guardianOpenId] !== undefined) continue
       const { data: gTokens } = await db.collection('subscription_tokens').where({
         guardianOpenId: binding.guardianOpenId,
         templateId
@@ -98,7 +100,28 @@ exports.main = async (event, context) => {
       guardianQuotas[binding.guardianOpenId] = remaining
     }
 
-    return { success: true, myRemaining, guardianTotal, guardianQuotas, guardianCount: bindings.length }
+    // 查询所有已绑定副成员的配额总和
+    let secondaryTotal = 0
+    try {
+      const { data: memberBindings } = await db.collection('member_bindings').where({
+        primaryOpenId: myOpenId,
+        status: 'bound'
+      }).get()
+
+      for (const mb of memberBindings) {
+        if (mb.secondaryOpenId && mb.secondaryOpenId !== myOpenId) {
+          const { data: sTokens } = await db.collection('subscription_tokens').where({
+            guardianOpenId: mb.secondaryOpenId,
+            templateId
+          }).get()
+          secondaryTotal += sTokens.length > 0 ? sTokens[0].remaining : 0
+        }
+      }
+    } catch (err) {
+      console.warn('[getQuota] 查询副成员配额失败:', err)
+    }
+
+    return { success: true, myRemaining, guardianTotal, guardianQuotas, guardianCount: bindings.length, secondaryTotal }
   }
 
   return { success: false, message: '未知操作' }

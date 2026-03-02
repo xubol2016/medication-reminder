@@ -109,6 +109,13 @@
   font-weight: 300;
 }
 
+.guardian-quota-hint {
+  padding: 16rpx 32rpx 0;
+  font-size: 14px;
+  color: #a0a0b8;
+  line-height: 1.6;
+}
+
 .tips {
   margin-top: 40rpx;
   background: linear-gradient(135deg, #fffcf0, #fff8e1);

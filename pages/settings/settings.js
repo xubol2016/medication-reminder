@@ -32,9 +32,7 @@ Page({
       medicineCount: getMedicines().length,
       guardianCount: getGuardians().length
     })
-    if (!isGuardian && !isSecondary) {
-      this.loadQuota()
-    }
+    this.loadQuota()
     if (isSecondary) {
       this.startSecondaryAutoReload()
     }
@@ -93,10 +91,20 @@ Page({
       data: { action: 'getQuota', templateId }
     }).then(res => {
       if (res.result && res.result.success) {
-        this.setData({
-          myRemaining: res.result.myRemaining,
-          guardianTotal: res.result.guardianTotal
-        })
+        const app = getApp()
+        const isSecondary = app.globalData.isSecondary === true
+        if (isSecondary) {
+          // 副成员只显示自己的配额
+          this.setData({
+            myRemaining: res.result.myRemaining
+          })
+        } else {
+          // Owner 显示自己的 + 副成员的合并配额
+          this.setData({
+            myRemaining: res.result.myRemaining + (res.result.secondaryTotal || 0),
+            guardianTotal: res.result.guardianTotal
+          })
+        }
       }
     }).catch(() => {})
   },
@@ -164,6 +172,11 @@ Page({
       content = '当前所有守护人的通知配额为0，漏服提醒无法送达。\n\n请让守护人打开小程序，在「守护人管理」页点击「续订提醒」进行授权。'
     } else {
       content = `当前守护人通知配额共${total}次。\n\n配额由守护人自行授权获得，每次授权+1次，每发送一条漏服通知-1次。\n如需增加，请让守护人点击「续订提醒」。`
+    }
+
+    const myR = this.data.myRemaining
+    if (myR >= 0) {
+      content += `\n\n💡 您的服药提醒配额：${myR}次（含副成员配额），用于到点推送服药提醒。`
     }
     wx.showModal({
       title: '守护通知说明',

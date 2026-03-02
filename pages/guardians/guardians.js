@@ -313,7 +313,17 @@ Page({
     })
   },
 
-  // 请求订阅消息授权
+  // 显示配额说明提示
+  showQuotaTip() {
+    wx.showModal({
+      title: '提醒配额说明',
+      content: '配额由守护人自行授权获取，每次授权+1次，每发送一条漏服通知-1次。\n\n如需增加，请让守护人打开小程序，进入「设置」页点击「增加提醒配额」按钮。',
+      showCancel: false,
+      confirmText: '知道了'
+    })
+  },
+
+  // 请求订阅消息授权（绑定成功后引导使用）
   requestSubscription() {
     const templateId = getApp().globalData.subscribeTemplateId
     if (!templateId) {
