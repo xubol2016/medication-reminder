@@ -143,7 +143,7 @@ Page({
     const id = e.currentTarget.dataset.id
     const med = getMedicineById(id)
     if (med) {
-      med.enabled = e.detail.value
+      med.enabled = e.detail
       saveMedicine(med)
       this.loadData()
     }
@@ -294,8 +294,6 @@ Page({
       hasDrugNames: false
     })
   },
-
-  noop() {},
 
   saveForm() {
     const { formName, formDosage, formTimes, memberIndex, members, editingId, formDrugs, hasDrugNames } = this.data

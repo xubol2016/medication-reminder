@@ -399,7 +399,5 @@ Page({
     }
     this.setData({ showInputCodePanel: false, inputInviteCode: '' })
     this.handleInviteAccept(code)
-  },
-
-  noop() {}
+  }
 })

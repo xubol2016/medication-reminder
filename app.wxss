@@ -1,4 +1,4 @@
-/* 全局样式 - 简约现代风格 + 适老化设计 */
+/* 全局样式 - 简约现代风格 + 适老化设计 + Vant CSS 变量覆盖 */
 page {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   font-size: 18px;
@@ -6,6 +6,27 @@ page {
   background: linear-gradient(180deg, #e8f0fe 0%, #f8f9fc 40%, #ffffff 100%);
   line-height: 1.6;
   min-height: 100vh;
+  /* Vant Weapp CSS 变量覆盖 - 适老化 */
+  --cell-font-size: 20px;
+  --cell-line-height: 1.6;
+  --cell-vertical-padding: 28rpx;
+  --cell-horizontal-padding: 32rpx;
+  --cell-text-color: #1a1a2e;
+  --cell-value-color: #a0a0b8;
+  --cell-icon-size: 24px;
+  --cell-group-title-font-size: 18px;
+  --cell-group-title-color: #a0a0b8;
+  --tag-font-size: 14px;
+  --tag-medium-font-size: 16px;
+  --tag-large-font-size: 18px;
+  --switch-width: 96rpx;
+  --switch-height: 52rpx;
+  --switch-on-background-color: #4A90D9;
+  --popup-round-border-radius: 32rpx;
+  --popup-background-color: #ffffff;
+  --empty-description-font-size: 18px;
+  --empty-description-color: #a0a0b8;
+  --loading-spinner-color: #4A90D9;
 }
 
 /* 通用按钮样式 - 大按钮易点击 + 微交互 */
@@ -145,13 +166,6 @@ page {
   flex: 1;
 }
 
-/* 待服状态标记（守护人只读模式） */
-.status-pending {
-  color: #a0a0b8;
-  font-size: 16px;
-  font-weight: 500;
-}
-
 /* 副成员只读模式横幅 */
 .secondary-banner {
   display: flex;
@@ -195,29 +209,7 @@ page {
   background: rgba(255, 255, 255, 0.4);
 }
 
-/* Bottom-Sheet Modal */
-.tp-mask {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
-
-.tp-panel {
-  background: #ffffff;
-  border-radius: 32rpx 32rpx 0 0;
-  padding: 40rpx 32rpx calc(40rpx + env(safe-area-inset-bottom));
-  width: 100%;
-  max-height: 80vh;
-  overflow-y: auto;
-}
-
+/* Bottom-Sheet 标题（用于 van-popup 内部） */
 .tp-panel-title {
   font-size: 22px;
   font-weight: 700;

@@ -51,24 +51,6 @@
   margin-top: 6rpx;
 }
 
-/* 状态徽章 */
-.guardian-status {
-  font-size: 18px;
-  padding: 12rpx 28rpx;
-  border-radius: 20rpx;
-  font-weight: 500;
-}
-
-.status-bound {
-  color: #2ecc71;
-  background: linear-gradient(135deg, #e8faf0, #d5f5e3);
-}
-
-.status-pending {
-  color: #f0932b;
-  background: linear-gradient(135deg, #fef9e7, #fdebd0);
-}
-
 /* 操作按钮组 */
 .guardian-actions {
   display: flex;
@@ -103,30 +85,6 @@
   background: linear-gradient(135deg, #e8faf0, #d5f5e3);
 }
 
-/* 守护人配额标签 */
-.guardian-quota {
-  font-size: 16px;
-  font-weight: 600;
-  padding: 10rpx 24rpx;
-  border-radius: 16rpx;
-  align-self: center;
-}
-
-.quota-ok {
-  color: #2ecc71;
-  background: linear-gradient(135deg, #e8faf0, #d5f5e3);
-}
-
-.quota-warn {
-  color: #f0932b;
-  background: linear-gradient(135deg, #fff5e6, #ffe8cc);
-}
-
-.quota-empty {
-  color: #e74c3c;
-  background: linear-gradient(135deg, #fef0f0, #fde8e8);
-}
-
 .action-edit {
   color: #4A90D9;
   background: linear-gradient(135deg, #eef4fc, #dce8f8);
@@ -135,52 +93,6 @@
 .action-delete {
   color: #e74c3c;
   background: linear-gradient(135deg, #fef0f0, #fde8e8);
-}
-
-/* 空状态 */
-.empty-state {
-  text-align: center;
-  padding: 100rpx 0;
-}
-
-.empty-icon {
-  font-size: 48px;
-  margin-bottom: 20rpx;
-}
-
-.empty-text {
-  font-size: 22px;
-  color: #a0a0b8;
-  margin-bottom: 12rpx;
-  font-weight: 500;
-}
-
-.empty-hint {
-  font-size: 18px;
-  color: #c8c8d8;
-  padding: 0 60rpx;
-}
-
-/* 底部弹窗 */
-.tp-mask {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 100;
-  display: flex;
-  align-items: flex-end;
-}
-
-.tp-panel {
-  width: 100%;
-  background: #ffffff;
-  border-radius: 32rpx 32rpx 0 0;
-  padding: 48rpx;
-  padding-bottom: calc(48rpx + env(safe-area-inset-bottom));
-  box-sizing: border-box;
 }
 
 /* 表单 */

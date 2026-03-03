@@ -1,4 +1,6 @@
 node_modules/
+miniprogram_npm/
 .claude/
 *.txt
 project.private.config.json
+package-lock.json

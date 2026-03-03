@@ -9,99 +9,87 @@
           <view class="guardian-relation">{{item.relation}}</view>
         </view>
       </view>
-      <view class="guardian-status {{item.bound ? 'status-bound' : 'status-pending'}}">
-        {{item.bound ? '✅ 已绑定' : '⏳ 待绑定'}}
-      </view>
+      <van-tag type="{{item.bound ? 'success' : 'warning'}}" size="large">{{item.bound ? '✅ 已绑定' : '⏳ 待绑定'}}</van-tag>
     </view>
     <view class="guardian-actions">
       <view class="action-btn action-invite" wx:if="{{!item.bound}}" bindtap="inviteGuardian" data-id="{{item.id}}">📨 邀请绑定</view>
       <view class="action-btn action-check" wx:if="{{!item.bound && item.inviteCode}}" bindtap="checkBindingStatus" data-id="{{item.id}}">🔄 刷新状态</view>
       <view class="action-btn action-subscribe" wx:if="{{item.bound}}" bindtap="showQuotaTip">🔔 提醒配额</view>
-      <view class="guardian-quota {{item.quota > 3 ? 'quota-ok' : (item.quota > 0 ? 'quota-warn' : 'quota-empty')}}" wx:if="{{item.bound && item.quota != undefined}}">剩余{{item.quota}}次</view>
+      <van-tag wx:if="{{item.bound && item.quota != undefined}}" type="{{item.quota > 3 ? 'success' : (item.quota > 0 ? 'warning' : 'danger')}}" size="medium">剩余{{item.quota}}次</van-tag>
       <view class="action-btn action-edit" bindtap="editGuardian" data-id="{{item.id}}">✏️ 编辑</view>
       <view class="action-btn action-delete" bindtap="deleteGuardian" data-id="{{item.id}}" data-name="{{item.name}}">🗑️ 删除</view>
     </view>
   </view>
 
   <!-- 空状态 -->
-  <view class="empty-state" wx:if="{{guardians.length === 0}}">
-    <view class="empty-icon">🛡️</view>
-    <view class="empty-text">还没有添加守护人</view>
-    <view class="empty-hint">添加子女或亲人为守护人，漏服时将收到微信提醒</view>
-  </view>
+  <van-empty wx:if="{{guardians.length === 0}}" description="还没有添加守护人，添加子女或亲人为守护人，漏服时将收到微信提醒" />
 
   <!-- 添加/编辑表单 - 底部弹窗 -->
-  <view class="tp-mask" wx:if="{{showForm}}" bindtap="cancelForm">
-    <view class="tp-panel form-panel" catchtap="noop">
-      <view class="form-title">{{editingId ? '✏️ 编辑守护人' : '➕ 添加守护人'}}</view>
-      <view class="form-group">
-        <view class="form-label">姓名/称呼</view>
-        <input class="form-input" placeholder="如：女儿小红" value="{{formName}}" bindinput="onNameInput" maxlength="10" />
+  <van-popup show="{{showForm}}" position="bottom" round closeable bind:close="cancelForm" safe-area-inset-bottom custom-style="padding:48rpx;">
+    <view class="form-title">{{editingId ? '✏️ 编辑守护人' : '➕ 添加守护人'}}</view>
+    <view class="form-group">
+      <view class="form-label">姓名/称呼</view>
+      <input class="form-input" placeholder="如：女儿小红" value="{{formName}}" bindinput="onNameInput" maxlength="10" />
+    </view>
+    <view class="form-group">
+      <view class="form-label">与老人的关系</view>
+      <view class="relation-options">
+        <view class="relation-option {{relationIndex === 0 ? 'selected' : ''}}" bindtap="selectRelation" data-index="0">儿子</view>
+        <view class="relation-option {{relationIndex === 1 ? 'selected' : ''}}" bindtap="selectRelation" data-index="1">女儿</view>
+        <view class="relation-option {{relationIndex === 2 ? 'selected' : ''}}" bindtap="selectRelation" data-index="2">孙子</view>
+        <view class="relation-option {{relationIndex === 3 ? 'selected' : ''}}" bindtap="selectRelation" data-index="3">孙女</view>
+        <view class="relation-option {{relationIndex === 4 ? 'selected' : ''}}" bindtap="selectRelation" data-index="4">其他</view>
       </view>
-      <view class="form-group">
-        <view class="form-label">与老人的关系</view>
-        <view class="relation-options">
-          <view class="relation-option {{relationIndex === 0 ? 'selected' : ''}}" bindtap="selectRelation" data-index="0">儿子</view>
-          <view class="relation-option {{relationIndex === 1 ? 'selected' : ''}}" bindtap="selectRelation" data-index="1">女儿</view>
-          <view class="relation-option {{relationIndex === 2 ? 'selected' : ''}}" bindtap="selectRelation" data-index="2">孙子</view>
-          <view class="relation-option {{relationIndex === 3 ? 'selected' : ''}}" bindtap="selectRelation" data-index="3">孙女</view>
-          <view class="relation-option {{relationIndex === 4 ? 'selected' : ''}}" bindtap="selectRelation" data-index="4">其他</view>
-        </view>
-        <view class="custom-relation-wrap" wx:if="{{relationIndex === 4}}">
-          <input class="form-input custom-relation-input" placeholder="可输入具体关系，如：邻居、护工" value="{{customRelation}}" bindinput="onCustomRelationInput" maxlength="10" />
-        </view>
-      </view>
-      <view class="form-actions mt-20">
-        <button class="btn-secondary" bindtap="cancelForm">取消</button>
-        <button class="btn-primary" bindtap="saveForm">💾 保存</button>
+      <view class="custom-relation-wrap" wx:if="{{relationIndex === 4}}">
+        <input class="form-input custom-relation-input" placeholder="可输入具体关系，如：邻居、护工" value="{{customRelation}}" bindinput="onCustomRelationInput" maxlength="10" />
       </view>
     </view>
-  </view>
+    <view class="form-actions mt-20">
+      <button class="btn-secondary" bindtap="cancelForm">取消</button>
+      <button class="btn-primary" bindtap="saveForm">💾 保存</button>
+    </view>
+  </van-popup>
 
   <!-- 邀请面板 - 底部弹窗 -->
-  <view class="tp-mask" wx:if="{{showInvitePanel}}" bindtap="closeInvitePanel">
-    <view class="tp-panel invite-panel" catchtap="noop">
-      <view class="form-title">📨 邀请守护人</view>
-      <view class="invite-code-box">
-        <view class="invite-code-label">邀请码</view>
-        <view class="invite-code-value">{{inviteCode}}</view>
-      </view>
-      <view class="invite-steps">
-        <view class="invite-step">
-          <view class="step-num">1</view>
-          <view class="step-text">点击"发送给守护人"直接分享，或复制邀请码手动发送</view>
-        </view>
-        <view class="invite-step">
-          <view class="step-num">2</view>
-          <view class="step-text">守护人点击分享卡片打开小程序，即可自动绑定；或手动输入邀请码绑定</view>
-        </view>
-        <view class="invite-step">
-          <view class="step-num">3</view>
-          <view class="step-text">守护人授权后即可接收漏服提醒</view>
-        </view>
-      </view>
-      <view class="invite-actions">
-        <button class="btn-primary btn-share" open-type="share">📨 发送给守护人</button>
-        <button class="btn-secondary btn-copy" bindtap="copyInviteCode">📋 复制邀请码</button>
-      </view>
-      <view class="invite-close" bindtap="closeInvitePanel">关闭</view>
+  <van-popup show="{{showInvitePanel}}" position="bottom" round closeable bind:close="closeInvitePanel" safe-area-inset-bottom custom-style="padding:48rpx;">
+    <view class="form-title">📨 邀请守护人</view>
+    <view class="invite-code-box">
+      <view class="invite-code-label">邀请码</view>
+      <view class="invite-code-value">{{inviteCode}}</view>
     </view>
-  </view>
+    <view class="invite-steps">
+      <view class="invite-step">
+        <view class="step-num">1</view>
+        <view class="step-text">点击"发送给守护人"直接分享，或复制邀请码手动发送</view>
+      </view>
+      <view class="invite-step">
+        <view class="step-num">2</view>
+        <view class="step-text">守护人点击分享卡片打开小程序，即可自动绑定；或手动输入邀请码绑定</view>
+      </view>
+      <view class="invite-step">
+        <view class="step-num">3</view>
+        <view class="step-text">守护人授权后即可接收漏服提醒</view>
+      </view>
+    </view>
+    <view class="invite-actions">
+      <button class="btn-primary btn-share" open-type="share">📨 发送给守护人</button>
+      <button class="btn-secondary btn-copy" bindtap="copyInviteCode">📋 复制邀请码</button>
+    </view>
+    <view class="invite-close" bindtap="closeInvitePanel">关闭</view>
+  </van-popup>
 
   <!-- 输入邀请码面板 - 底部弹窗 -->
-  <view class="tp-mask" wx:if="{{showInputCodePanel}}" bindtap="closeInputCodePanel">
-    <view class="tp-panel invite-panel" catchtap="noop">
-      <view class="form-title">🔗 输入邀请码</view>
-      <view class="form-group">
-        <view class="form-label">请粘贴家人发来的邀请码</view>
-        <input class="form-input" placeholder="在此粘贴邀请码" value="{{inputInviteCode}}" bindinput="onInviteCodeInput" />
-      </view>
-      <view class="form-actions mt-20">
-        <button class="btn-secondary" bindtap="closeInputCodePanel">取消</button>
-        <button class="btn-primary" bindtap="submitInviteCode">确认绑定</button>
-      </view>
+  <van-popup show="{{showInputCodePanel}}" position="bottom" round closeable bind:close="closeInputCodePanel" safe-area-inset-bottom custom-style="padding:48rpx;">
+    <view class="form-title">🔗 输入邀请码</view>
+    <view class="form-group">
+      <view class="form-label">请粘贴家人发来的邀请码</view>
+      <input class="form-input" placeholder="在此粘贴邀请码" value="{{inputInviteCode}}" bindinput="onInviteCodeInput" />
     </view>
-  </view>
+    <view class="form-actions mt-20">
+      <button class="btn-secondary" bindtap="closeInputCodePanel">取消</button>
+      <button class="btn-primary" bindtap="submitInviteCode">确认绑定</button>
+    </view>
+  </van-popup>
 
   <!-- 添加按钮 -->
   <view class="add-btn-wrap mt-20" wx:if="{{!showForm && !showInvitePanel && !showInputCodePanel}}">

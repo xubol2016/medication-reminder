@@ -17,105 +17,35 @@
   <!-- 管理入口 -->
   <view class="section-title">📋 管理</view>
   <!-- 守护人或副成员模式：可点击查看（只读） -->
-  <view class="card menu-card" wx:if="{{isGuardian || isSecondary}}">
-    <view class="menu-item" bindtap="goMembers">
-      <view class="menu-item-left">
-        <view class="menu-icon menu-icon-blue">👥</view>
-        <text class="menu-text">成员</text>
-      </view>
-      <view class="menu-item-right">
-        <text class="menu-count">{{memberCount}} 人</text>
-        <text class="menu-arrow">›</text>
-      </view>
-    </view>
-    <view class="menu-item" bindtap="goMedicines">
-      <view class="menu-item-left">
-        <view class="menu-icon menu-icon-green">💊</view>
-        <text class="menu-text">药物</text>
-      </view>
-      <view class="menu-item-right">
-        <text class="menu-count">{{medicineCount}} 种</text>
-        <text class="menu-arrow">›</text>
-      </view>
-    </view>
-  </view>
+  <van-cell-group inset round wx:if="{{isGuardian || isSecondary}}">
+    <van-cell title="成员" icon="👥" is-link bind:click="goMembers" value="{{memberCount}} 人" />
+    <van-cell title="药物" icon="💊" is-link bind:click="goMedicines" value="{{medicineCount}} 种" />
+  </van-cell-group>
   <!-- 正常模式：可点击管理 -->
-  <view class="card menu-card" wx:else>
-    <view class="menu-item" bindtap="goMembers">
-      <view class="menu-item-left">
-        <view class="menu-icon menu-icon-blue">👥</view>
-        <text class="menu-text">成员管理</text>
-      </view>
-      <view class="menu-item-right">
-        <text class="menu-count">{{memberCount}} 人</text>
-        <text class="menu-arrow">›</text>
-      </view>
-    </view>
-    <view class="menu-item" bindtap="goMedicines">
-      <view class="menu-item-left">
-        <view class="menu-icon menu-icon-green">💊</view>
-        <text class="menu-text">药物管理</text>
-      </view>
-      <view class="menu-item-right">
-        <text class="menu-count">{{medicineCount}} 种</text>
-        <text class="menu-arrow">›</text>
-      </view>
-    </view>
-    <view class="menu-item" bindtap="goGuardians">
-      <view class="menu-item-left">
-        <view class="menu-icon menu-icon-orange">🛡️</view>
-        <text class="menu-text">守护人管理</text>
-      </view>
-      <view class="menu-item-right">
-        <text class="menu-count">{{guardianCount}} 人</text>
-        <text class="menu-arrow">›</text>
-      </view>
-    </view>
-  </view>
+  <van-cell-group inset round wx:else>
+    <van-cell title="成员管理" icon="👥" is-link bind:click="goMembers" value="{{memberCount}} 人" />
+    <van-cell title="药物管理" icon="💊" is-link bind:click="goMedicines" value="{{medicineCount}} 种" />
+    <van-cell title="守护人管理" icon="🛡️" is-link bind:click="goGuardians" value="{{guardianCount}} 人" />
+  </van-cell-group>
 
   <!-- 数据管理（守护人和副成员模式隐藏） -->
   <block wx:if="{{!isGuardian && !isSecondary}}">
     <view class="section-title">🗂️ 数据</view>
-    <view class="card menu-card">
-      <view class="menu-item" bindtap="cleanOldData">
-        <view class="menu-item-left">
-          <view class="menu-icon menu-icon-orange">🧹</view>
-          <text class="menu-text">清理历史记录</text>
-        </view>
-        <view class="menu-item-right">
-          <text class="menu-hint">保留近6个月</text>
-          <text class="menu-arrow">›</text>
-        </view>
-      </view>
-      <view class="menu-item" bindtap="clearAllData">
-        <view class="menu-item-left">
-          <view class="menu-icon menu-icon-red">🗑️</view>
-          <text class="menu-text text-danger">清除所有数据</text>
-        </view>
-        <view class="menu-item-right">
-          <text class="menu-hint">不可恢复</text>
-          <text class="menu-arrow">›</text>
-        </view>
-      </view>
-    </view>
+    <van-cell-group inset round>
+      <van-cell title="清理历史记录" icon="🧹" is-link bind:click="cleanOldData" label="保留近6个月" />
+      <van-cell title="清除所有数据" title-class="text-danger" icon="🗑️" is-link bind:click="clearAllData" label="不可恢复" />
+    </van-cell-group>
   </block>
 
   <!-- 守护人提醒配额（仅守护人模式显示） -->
   <block wx:if="{{isGuardian}}">
     <view class="section-title">🔔 我的提醒配额</view>
-    <view class="card menu-card">
-      <view class="menu-item" bindtap="requestSubscription">
-        <view class="menu-item-left">
-          <view class="menu-icon menu-icon-green">🔔</view>
-          <text class="menu-text">增加提醒配额</text>
-        </view>
-        <view class="menu-item-right">
-          <text class="menu-quota {{myRemaining > 3 ? 'quota-ok' : (myRemaining > 0 ? 'quota-warn' : 'quota-empty')}}" wx:if="{{myRemaining >= 0}}">剩余{{myRemaining}}次</text>
-          <text class="menu-hint" wx:else>点击授权</text>
-          <text class="menu-arrow">›</text>
-        </view>
-      </view>
-    </view>
+    <van-cell-group inset round>
+      <van-cell title="增加提醒配额" icon="🔔" is-link bind:click="requestSubscription">
+        <van-tag slot="right-icon" wx:if="{{myRemaining >= 0}}" type="{{myRemaining > 3 ? 'success' : (myRemaining > 0 ? 'warning' : 'danger')}}" size="medium">剩余{{myRemaining}}次</van-tag>
+        <text slot="right-icon" wx:else class="menu-hint">点击授权</text>
+      </van-cell>
+    </van-cell-group>
     <view class="guardian-quota-hint">
       <text>💡 每次点击授权可增加1次漏服提醒接收次数，配额用完后将无法收到通知</text>
     </view>
@@ -124,19 +54,12 @@
   <!-- 副成员提醒配额 -->
   <block wx:if="{{isSecondary}}">
     <view class="section-title">🔔 我的提醒配额</view>
-    <view class="card menu-card">
-      <view class="menu-item" bindtap="requestSubscription">
-        <view class="menu-item-left">
-          <view class="menu-icon menu-icon-green">🔔</view>
-          <text class="menu-text">增加提醒配额</text>
-        </view>
-        <view class="menu-item-right">
-          <text class="menu-quota {{myRemaining > 3 ? 'quota-ok' : (myRemaining > 0 ? 'quota-warn' : 'quota-empty')}}" wx:if="{{myRemaining >= 0}}">剩余{{myRemaining}}次</text>
-          <text class="menu-hint" wx:else>点击授权</text>
-          <text class="menu-arrow">›</text>
-        </view>
-      </view>
-    </view>
+    <van-cell-group inset round>
+      <van-cell title="增加提醒配额" icon="🔔" is-link bind:click="requestSubscription">
+        <van-tag slot="right-icon" wx:if="{{myRemaining >= 0}}" type="{{myRemaining > 3 ? 'success' : (myRemaining > 0 ? 'warning' : 'danger')}}" size="medium">剩余{{myRemaining}}次</van-tag>
+        <text slot="right-icon" wx:else class="menu-hint">点击授权</text>
+      </van-cell>
+    </van-cell-group>
     <view class="guardian-quota-hint">
       <text>💡 每次点击授权可增加1次服药提醒接收次数，配额用完后将无法收到通知</text>
     </view>
@@ -145,43 +68,23 @@
   <!-- 通知设置（守护人和副成员模式隐藏） -->
   <block wx:if="{{!isGuardian && !isSecondary}}">
     <view class="section-title">🔔 通知</view>
-    <view class="card menu-card">
-      <view class="menu-item" bindtap="requestSubscription">
-        <view class="menu-item-left">
-          <view class="menu-icon menu-icon-green">🔔</view>
-          <text class="menu-text">开启服药提醒通知</text>
-        </view>
-        <view class="menu-item-right">
-          <text class="menu-quota {{myRemaining > 3 ? 'quota-ok' : (myRemaining > 0 ? 'quota-warn' : 'quota-empty')}}" wx:if="{{myRemaining >= 0}}">剩余{{myRemaining}}次</text>
-          <text class="menu-hint" wx:else>点击授权</text>
-          <text class="menu-arrow">›</text>
-        </view>
-      </view>
-      <view class="menu-item" bindtap="showGuardianQuotaTip">
-        <view class="menu-item-left">
-          <view class="menu-icon menu-icon-orange">📢</view>
-          <text class="menu-text">漏服守护通知</text>
-        </view>
-        <view class="menu-item-right">
-          <text class="menu-quota {{guardianTotal > 3 ? 'quota-ok' : (guardianTotal > 0 ? 'quota-warn' : 'quota-empty')}}" wx:if="{{guardianTotal >= 0}}">守护人剩余{{guardianTotal}}次</text>
-          <text class="menu-hint" wx:else>由守护人授权</text>
-          <text class="menu-arrow">›</text>
-        </view>
-      </view>
-    </view>
+    <van-cell-group inset round>
+      <van-cell title="开启服药提醒通知" icon="🔔" is-link bind:click="requestSubscription">
+        <van-tag slot="right-icon" wx:if="{{myRemaining >= 0}}" type="{{myRemaining > 3 ? 'success' : (myRemaining > 0 ? 'warning' : 'danger')}}" size="medium">剩余{{myRemaining}}次</van-tag>
+        <text slot="right-icon" wx:else class="menu-hint">点击授权</text>
+      </van-cell>
+      <van-cell title="漏服守护通知" icon="📢" is-link bind:click="showGuardianQuotaTip">
+        <van-tag slot="right-icon" wx:if="{{guardianTotal >= 0}}" type="{{guardianTotal > 3 ? 'success' : (guardianTotal > 0 ? 'warning' : 'danger')}}" size="medium">守护人剩余{{guardianTotal}}次</van-tag>
+        <text slot="right-icon" wx:else class="menu-hint">由守护人授权</text>
+      </van-cell>
+    </van-cell-group>
   </block>
 
   <!-- 关于 -->
   <view class="section-title">ℹ️ 关于</view>
-  <view class="card menu-card">
-    <view class="menu-item">
-      <view class="menu-item-left">
-        <view class="menu-icon menu-icon-purple">📱</view>
-        <text class="menu-text">版本</text>
-      </view>
-      <text class="menu-hint">v1.0.0</text>
-    </view>
-  </view>
+  <van-cell-group inset round>
+    <van-cell title="版本" icon="📱" value="v1.0.0" />
+  </van-cell-group>
 
   <!-- 使用提示 -->
   <view class="tips card">

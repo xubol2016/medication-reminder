@@ -358,7 +358,5 @@ Page({
       console.error('副成员绑定失败:', err)
       wx.showToast({ title: '绑定失败', icon: 'none' })
     })
-  },
-
-  noop() {}
+  }
 })

@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText": "服药记录"
+  "navigationBarTitleText": "服药记录",
+  "usingComponents": {
+    "van-tag": "@vant/weapp/tag/index"
+  }
 }

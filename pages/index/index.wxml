@@ -90,19 +90,22 @@
         </view>
       </view>
       <view class="med-card-right">
-        <view wx:if="{{item.status === 'taken'}}" class="status-badge status-taken">✓ 已吃</view>
-        <view wx:elif="{{item.status === 'missed' && !isGuardian && !isSecondary}}" class="status-badge status-missed" bindtap="handleMissed" data-record-id="{{item.recordId}}" data-medicine-id="{{item.medicineId}}" data-member-id="{{item.memberId}}" data-time="{{item.time}}" data-drug-index="{{item.drugIndex}}">✕ 漏服</view>
-        <view wx:elif="{{item.status === 'missed' && (isGuardian || isSecondary)}}" class="status-badge status-missed">✕ 漏服</view>
+        <van-tag wx:if="{{item.status === 'taken'}}" type="success" size="large">✓ 已吃</van-tag>
+        <view wx:elif="{{item.status === 'missed' && !isGuardian && !isSecondary}}" bindtap="handleMissed" data-record-id="{{item.recordId}}" data-medicine-id="{{item.medicineId}}" data-member-id="{{item.memberId}}" data-time="{{item.time}}" data-drug-index="{{item.drugIndex}}">
+          <van-tag type="danger" size="large">✕ 漏服</van-tag>
+        </view>
+        <van-tag wx:elif="{{item.status === 'missed' && (isGuardian || isSecondary)}}" type="danger" size="large">✕ 漏服</van-tag>
         <button wx:elif="{{!isGuardian && !isSecondary}}" class="btn-take" bindtap="takeMedicine" data-medicine-id="{{item.medicineId}}" data-member-id="{{item.memberId}}" data-time="{{item.time}}" data-drug-index="{{item.drugIndex}}">💊 吃药</button>
-        <view wx:else class="status-badge status-pending">◦ 待服</view>
+        <van-tag wx:else type="default" size="large">◦ 待服</van-tag>
       </view>
     </view>
   </view>
 
   <!-- 空状态 -->
-  <view class="empty-state" wx:if="{{members.length === 0 || allList.length === 0}}">
-    <view class="empty-icon">📋</view>
-    <view class="empty-text">{{members.length === 0 ? '请先添加成员和药物' : '今天没有需要服药的项目'}}</view>
-    <button class="btn-primary" style="margin-top: 40rpx;" bindtap="goSettings" wx:if="{{!isGuardian && !isSecondary}}">⚙️ 前往设置</button>
+  <view wx:if="{{members.length === 0 || allList.length === 0}}">
+    <van-empty description="{{members.length === 0 ? '请先添加成员和药物' : '今天没有需要服药的项目'}}" />
+    <view style="padding: 0 48rpx;">
+      <button class="btn-primary" bindtap="goSettings" wx:if="{{!isGuardian && !isSecondary}}">⚙️ 前往设置</button>
+    </view>
   </view>
 </view>

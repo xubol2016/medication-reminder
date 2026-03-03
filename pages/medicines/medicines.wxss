@@ -143,38 +143,9 @@
   background: linear-gradient(135deg, #fef0f0, #fde8e8);
 }
 
-/* 空状态 */
-.empty-state {
-  text-align: center;
-  padding: 100rpx 0;
-}
-
-.empty-icon {
-  font-size: 48px;
-  margin-bottom: 20rpx;
-}
-
-.empty-text {
-  font-size: 22px;
-  color: #a0a0b8;
-  margin-bottom: 12rpx;
-  font-weight: 500;
-}
-
-.empty-hint {
-  font-size: 18px;
-  color: #c8c8d8;
-}
-
 /* 表单弹层 */
-.form-panel {
-  max-height: 80vh;
-  display: flex;
-  flex-direction: column;
-}
-
 .form-scroll {
-  height: calc(80vh - 300rpx);
+  height: calc(75vh - 300rpx);
 }
 
 .form-title {
@@ -251,29 +222,6 @@
 
 .add-btn-wrap {
   padding: 0 24rpx;
-}
-
-/* ====== 自定义弹出面板通用样式 ====== */
-.tp-mask {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-}
-
-.tp-panel {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #ffffff;
-  border-radius: 36rpx 36rpx 0 0;
-  padding: 40rpx 36rpx 60rpx;
-  box-shadow: 0 -8rpx 40rpx rgba(0, 0, 0, 0.12);
-  z-index: 1000;
 }
 
 .tp-title {
@@ -539,20 +487,6 @@
   border-radius: 16rpx;
 }
 
-.tip-loading-spinner {
-  width: 40rpx;
-  height: 40rpx;
-  border: 4rpx solid #e0e2e8;
-  border-top-color: #4A90D9;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  flex-shrink: 0;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
 .tip-loading-text {
   font-size: 18px;
   color: #a0a0b8;
@@ -636,13 +570,6 @@
   box-shadow: 0 4rpx 16rpx rgba(39, 174, 96, 0.35);
 }
 
-/* 查看提示弹层 */
-.tip-view-panel {
-  max-height: 75vh;
-  display: flex;
-  flex-direction: column;
-}
-
 .tip-view-scroll {
   flex: 1;
   height: 0;
@@ -670,14 +597,6 @@
   margin-top: 10rpx;
 }
 
-.med-drug-tag {
-  font-size: 15px;
-  color: #4A90D9;
-  background: linear-gradient(135deg, #eef4fc, #dce8f8);
-  padding: 4rpx 20rpx;
-  border-radius: 12rpx;
-  font-weight: 500;
-}
 
 /* ====== 具体药名输入区域 ====== */
 .drug-name-item {

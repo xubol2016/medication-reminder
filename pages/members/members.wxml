@@ -17,7 +17,7 @@
         <view class="member-avatar">{{item.name[0]}}</view>
         <view class="member-detail">
           <view class="member-name">{{item.name}}</view>
-          <view class="member-role" wx:if="{{!isSecondary}}">{{item.isSecondaryMember ? '副成员' : '主成员 · 可管理数据'}}</view>
+          <van-tag wx:if="{{!isSecondary}}" type="{{item.isSecondaryMember ? 'warning' : 'primary'}}" size="medium" plain>{{item.isSecondaryMember ? '副成员' : '主成员'}}</van-tag>
         </view>
       </view>
       <view class="member-actions" wx:if="{{!isSecondary && !isGuardian && !item.isSecondaryMember}}">
@@ -57,9 +57,8 @@
     <view class="card secondary-card" wx:for="{{secondaryMembers}}" wx:key="id">
       <view class="secondary-row">
         <view class="secondary-info">
-          <view class="secondary-status-dot {{item.status === 'bound' ? 'dot-bound' : 'dot-pending'}}"></view>
+          <van-tag type="{{item.status === 'bound' ? 'success' : 'warning'}}" size="medium">{{item.status === 'bound' ? '已绑定' : '待接受'}}</van-tag>
           <text class="secondary-name">{{item.name || '副成员'}}</text>
-          <text class="secondary-status-label">{{item.status === 'bound' ? '已绑定' : '待接受'}}</text>
         </view>
         <view class="secondary-actions">
           <view class="action-btn action-edit" wx:if="{{item.status === 'pending'}}" bindtap="checkSecondaryStatus" data-code="{{item.inviteCode}}">检查</view>
@@ -89,30 +88,26 @@
   </block>
 
   <!-- 邀请面板 -->
-  <view class="tp-mask" wx:if="{{showInvitePanel}}" catchtap="closeInvitePanel">
-    <view class="tp-panel" catchtap="noop">
-      <view class="tp-panel-title">邀请副成员</view>
-      <view class="invite-code-display">{{inviteCode}}</view>
-      <view class="invite-tips">请将邀请码发送给对方，或通过分享卡片邀请。</view>
-      <view class="form-actions mt-20">
-        <button class="btn-secondary" bindtap="copyInviteCode">📋 复制邀请码</button>
-        <button class="btn-primary" open-type="share">📤 分享卡片</button>
-      </view>
-      <button class="btn-secondary mt-20" bindtap="closeInvitePanel">关闭</button>
+  <van-popup show="{{showInvitePanel}}" position="bottom" round closeable bind:close="closeInvitePanel" safe-area-inset-bottom custom-style="padding:48rpx;">
+    <view class="tp-panel-title">邀请副成员</view>
+    <view class="invite-code-display">{{inviteCode}}</view>
+    <view class="invite-tips">请将邀请码发送给对方，或通过分享卡片邀请。</view>
+    <view class="form-actions mt-20">
+      <button class="btn-secondary" bindtap="copyInviteCode">📋 复制邀请码</button>
+      <button class="btn-primary" open-type="share">📤 分享卡片</button>
     </view>
-  </view>
+    <button class="btn-secondary mt-20" bindtap="closeInvitePanel">关闭</button>
+  </van-popup>
 
   <!-- 输入邀请码面板 -->
-  <view class="tp-mask" wx:if="{{showInputCodePanel}}" catchtap="closeInputCodePanel">
-    <view class="tp-panel" catchtap="noop">
-      <view class="tp-panel-title">输入邀请码</view>
-      <view class="form-group">
-        <input class="form-input" placeholder="请粘贴邀请码" value="{{inputInviteCode}}" bindinput="onInviteCodeInput" />
-      </view>
-      <view class="form-actions mt-20">
-        <button class="btn-secondary" bindtap="closeInputCodePanel">取消</button>
-        <button class="btn-primary" bindtap="submitInviteCode">确认绑定</button>
-      </view>
+  <van-popup show="{{showInputCodePanel}}" position="bottom" round closeable bind:close="closeInputCodePanel" safe-area-inset-bottom custom-style="padding:48rpx;">
+    <view class="tp-panel-title">输入邀请码</view>
+    <view class="form-group">
+      <input class="form-input" placeholder="请粘贴邀请码" value="{{inputInviteCode}}" bindinput="onInviteCodeInput" />
     </view>
-  </view>
+    <view class="form-actions mt-20">
+      <button class="btn-secondary" bindtap="closeInputCodePanel">取消</button>
+      <button class="btn-primary" bindtap="submitInviteCode">确认绑定</button>
+    </view>
+  </van-popup>
 </view>

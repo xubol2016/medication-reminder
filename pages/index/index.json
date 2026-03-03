@@ -1,3 +1,7 @@
 {
-  "navigationBarTitleText": "今日吃药"
+  "navigationBarTitleText": "今日吃药",
+  "usingComponents": {
+    "van-tag": "@vant/weapp/tag/index",
+    "van-empty": "@vant/weapp/empty/index"
+  }
 }

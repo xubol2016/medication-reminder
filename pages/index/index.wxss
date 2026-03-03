@@ -332,42 +332,6 @@
   box-shadow: 0 2rpx 8rpx rgba(39, 174, 96, 0.2);
 }
 
-/* 状态标记 */
-.status-badge {
-  padding: 12rpx 28rpx;
-  border-radius: 16rpx;
-  font-size: 18px;
-  font-weight: 600;
-  text-align: center;
-}
-
-.status-taken {
-  background: linear-gradient(135deg, #e8faf0, #d5f5e3);
-  color: #27ae60;
-}
-
-.status-missed {
-  background: linear-gradient(135deg, #fef0f0, #fde8e8);
-  color: #e74c3c;
-}
-
-/* 空状态 */
-.empty-state {
-  text-align: center;
-  padding: 120rpx 48rpx;
-}
-
-.empty-icon {
-  font-size: 48px;
-  margin-bottom: 24rpx;
-}
-
-.empty-text {
-  font-size: 22px;
-  color: #a0a0b8;
-  font-weight: 500;
-}
-
 /* 具体药名下方的记忆名称标签 */
 .med-cat-row {
   margin-top: 4rpx;

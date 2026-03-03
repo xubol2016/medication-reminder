@@ -233,28 +233,6 @@
   flex-shrink: 0;
 }
 
-.status-pill {
-  padding: 12rpx 28rpx;
-  border-radius: 20rpx;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.status-pill-taken {
-  background: linear-gradient(135deg, #e8faf0, #d5f5e3);
-  color: #27ae60;
-}
-
-.status-pill-missed {
-  background: linear-gradient(135deg, #fef0f0, #fde8e8);
-  color: #e74c3c;
-}
-
-.status-pill-pending {
-  background: #f5f5f8;
-  color: #a0a0b8;
-}
-
 /* 空状态 */
 .empty-hint {
   text-align: center;
