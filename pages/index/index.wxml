@@ -19,6 +19,7 @@
 
   <!-- 日期显示 - 渐变头部 -->
   <view class="date-bar">
+    <text class="date-bar-title">今日吃药</text>
     <view class="date-bar-inner">
       <view class="date-left">
         <text class="date-text">{{today}}</text>

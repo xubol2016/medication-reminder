@@ -6,15 +6,28 @@
 /* 月份栏 */
 .month-bar {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 28rpx;
+  padding: 24rpx 28rpx 32rpx;
   background: linear-gradient(135deg, #4A90D9, #5BA3EC);
+  gap: 16rpx;
+}
+
+.month-bar-title {
+  font-size: 52rpx;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 4rpx;
+}
+
+.month-nav {
+  display: flex;
+  align-items: center;
   gap: 48rpx;
 }
 
 .month-btn {
-  font-size: 22px;
+  font-size: 26px;
   color: rgba(255, 255, 255, 0.9);
   padding: 16rpx 28rpx;
   border-radius: 12rpx;
@@ -27,7 +40,7 @@
 }
 
 .month-text {
-  font-size: 22px;
+  font-size: 30px;
   font-weight: 700;
   color: #ffffff;
   letter-spacing: 2rpx;

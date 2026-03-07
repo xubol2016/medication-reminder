@@ -19,9 +19,12 @@
 
   <!-- 月份切换 -->
   <view class="month-bar">
-    <view class="month-btn" bindtap="prevMonth">◀</view>
-    <text class="month-text">{{year}}年{{month}}月</text>
-    <view class="month-btn" bindtap="nextMonth">▶</view>
+    <text class="month-bar-title">服药记录</text>
+    <view class="month-nav">
+      <view class="month-btn" bindtap="prevMonth">◀</view>
+      <text class="month-text">{{year}}年{{month}}月</text>
+      <view class="month-btn" bindtap="nextMonth">▶</view>
+    </view>
   </view>
 
   <!-- 日历 -->

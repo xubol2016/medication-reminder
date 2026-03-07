@@ -1,4 +1,7 @@
 <view class="container p-24">
+  <!-- 页面大标题 -->
+  <view class="page-large-title">设置</view>
+
   <!-- 守护人提示条 -->
   <view class="guardian-banner" wx:if="{{isGuardian}}">
     <text class="guardian-banner-icon">👁️</text>
@@ -149,7 +152,7 @@
       <view class="menu-item" bindtap="requestSubscription">
         <view class="menu-item-left">
           <view class="menu-icon menu-icon-green">🔔</view>
-          <text class="menu-text">开启服药提醒通知</text>
+          <text class="menu-text">服药提醒通知</text>
         </view>
         <view class="menu-item-right">
           <text class="menu-quota {{myRemaining > 3 ? 'quota-ok' : (myRemaining > 0 ? 'quota-warn' : 'quota-empty')}}" wx:if="{{myRemaining >= 0}}">剩余{{myRemaining}}次</text>
@@ -163,7 +166,7 @@
           <text class="menu-text">漏服守护通知</text>
         </view>
         <view class="menu-item-right">
-          <text class="menu-quota {{guardianTotal > 3 ? 'quota-ok' : (guardianTotal > 0 ? 'quota-warn' : 'quota-empty')}}" wx:if="{{guardianTotal >= 0}}">守护人剩余{{guardianTotal}}次</text>
+          <text class="menu-quota {{guardianTotal > 3 ? 'quota-ok' : (guardianTotal > 0 ? 'quota-warn' : 'quota-empty')}}" wx:if="{{guardianTotal >= 0}}">剩余{{guardianTotal}}次</text>
           <text class="menu-hint" wx:else>由守护人授权</text>
           <text class="menu-arrow">›</text>
         </view>
@@ -187,23 +190,22 @@
   <view class="tips card">
     <view class="tips-title">💡 使用提示</view>
     <block wx:if="{{isGuardian}}">
-      <view class="tips-text">· 您当前以守护人身份查看 {{guardianOwnerName}} 的用药数据</view>
-      <view class="tips-text">· 数据为只读模式，无法进行修改操作</view>
-      <view class="tips-text">· 当家人漏服药物时，您会收到微信通知提醒</view>
-      <view class="tips-text">· 点击上方「增加提醒配额」可获取更多漏服通知次数</view>
+      <view class="tips-text">· 您正在查看 {{guardianOwnerName}} 的用药数据，仅可查看，不能修改</view>
+      <view class="tips-text">· 数据每60秒自动从云端刷新，也可点击顶部刷新按钮立即更新</view>
+      <view class="tips-text">· 家人漏服药物时，您会收到微信通知（需有剩余配额）</view>
+      <view class="tips-text">· 配额用完后将收不到通知，请点击上方「增加提醒配额」补充</view>
     </block>
     <block wx:elif="{{isSecondary}}">
-      <view class="tips-text">· 您当前以副成员身份查看 {{primaryOwnerName}} 的用药数据</view>
-      <view class="tips-text">· 数据为只读模式，每60秒自动同步</view>
-      <view class="tips-text">· 点击刷新按钮可立即获取最新数据</view>
+      <view class="tips-text">· 您正在查看 {{primaryOwnerName}} 的用药数据，仅可查看，不能修改</view>
+      <view class="tips-text">· 数据每60秒自动从云端刷新，也可点击顶部刷新按钮立即更新</view>
     </block>
     <block wx:else>
-      <view class="tips-text">· 请在服药时间前打开小程序，系统会弹窗提醒</view>
-      <view class="tips-text">· 漏服的药物会在下次打开时自动标记</view>
-      <view class="tips-text">· 数据存储在本地，清除小程序缓存会丢失数据</view>
-      <view class="tips-text">· 添加守护人后，漏服时会自动发送微信提醒给守护人</view>
-      <view class="tips-text">· 点击"开启服药提醒通知"可授权微信推送提醒，无需打开小程序也能收到</view>
-      <view class="tips-text">· 每次授权可获得1次推送机会，建议多次点击授权</view>
+      <view class="tips-text">· 打开小程序时，系统自动将过去未服的药标记为漏服</view>
+      <view class="tips-text">· 将小程序保持在前台，服药时间到时会弹窗提醒（每分钟检查一次）</view>
+      <view class="tips-text">· 在「今日吃药」页面可以补记漏服的药物</view>
+      <view class="tips-text">· 数据存储在手机本地，卸载或清除缓存会丢失，请勿随意清除</view>
+      <view class="tips-text">· 添加守护人后，漏服时自动发微信通知给守护人（需守护人有剩余配额）</view>
+      <view class="tips-text">· 点击「服药提醒通知」可授权微信推送，每次授权获得1次推送机会，建议多次点击</view>
     </block>
   </view>
 </view>

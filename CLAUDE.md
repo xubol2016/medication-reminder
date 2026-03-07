@@ -10,10 +10,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **平台**: 微信小程序原生框架 + 微信云开发（可选）
 - **开发工具**: 微信开发者工具（WeChat DevTools）打开项目根目录即可运行
-- **无需构建/编译命令**，无 package.json、无 node_modules（云函数目录除外）
-- **无测试框架**，在模拟器中手动测试
-- **无 linter 配置**
-- **云函数部署**: 在微信开发者工具中右键每个 `cloud/` 子目录 → "上传并部署"
+- **无需构建/编译命令**，无测试框架，无 linter 配置
+- **UI 组件库**: `@vant/weapp`（`node_modules/` 已提交），在 page 的 `.json` 中按需声明 `usingComponents`
+- **云函数部署**: 在微信开发者工具中右键每个 `cloud/` 子目录 → "上传并部署"（各子目录有独立 `package.json`，依赖 `wx-server-sdk`，部署前需 npm install）
 
 ## Architecture
 
@@ -64,6 +63,8 @@ guardians: { id, name, relation, bound, openId, subscribedCount, inviteCode }
 | `getOwnerData` | 守护人端调用，验证调用者的绑定关系后，返回被守护人的成员、药品、记录数据（从 `user_members` / `user_medicines` / `user_records` 集合读取）|
 | `sendNotification` | 向所有已绑定守护人推送订阅消息（检查 `subscription_tokens` 余量，发送后扣减）|
 | `getMedicineTip` | 调用 Anthropic Claude API，根据药物名称生成适合老年人阅读的健康小提示（`{ effect, usage, cautions[], tip }`），用内置 `https` 模块请求，无额外依赖 |
+| `bindSecondary` | 副成员绑定：`action=bind`（副成员接受邀请，写入 `member_bindings`）/ `action=unbind`（删除绑定）|
+| `getSecondaryData` | 副成员端调用，验证 `member_bindings` 绑定关系后返回主人的成员、药品、记录数据（去重后返回）|
 | `checkMedReminder` / `checkMissedReminder` / `confirmTaken` | 定时触发备用，当前小程序端已自行处理 |
 
 **订阅消息模板字段** (`sendNotification` 发送时的字段名，须与微信后台模板一致):
@@ -78,12 +79,19 @@ guardians: { id, name, relation, bound, openId, subscribedCount, inviteCode }
 - `user_medicines` — 本地药品镜像
 - `user_records` — 最近 30 天记录镜像
 - `guardian_bindings` — `{ inviteCode, ownerOpenId, guardianOpenId, status: "pending"|"bound" }`
+- `member_bindings` — `{ inviteCode, primaryOpenId, secondaryOpenId, status: "pending"|"bound" }`（副成员绑定）
 - `subscription_tokens` — `{ guardianOpenId, templateId, remaining }`（每次 subscribe action +1，发消息 -1）
 - `notification_log` — 通知发送日志
 
-### 双模式架构（Owner / Guardian）
+### 三模式架构（Owner / Guardian / Secondary）
 
-应用支持两种角色：**数据主人（Owner）**和**守护人（Guardian）**。`app.js` 的 `onShow` 通过 `getOwnerData` 云函数探测当前用户是否为已绑定守护人。关键 `globalData` 字段：`isGuardian`（布尔）、`guardianData`（缓存的被守护人数据，含 members/medicines/records）、`guardianOwnerName`（被守护人名称）、`guardianChecked`（探测完成标志）。Guardian 模式下 `storage.js` 的读取函数返回 `guardianData` 中的数据，写入操作被禁用。
+应用支持三种角色，持久化存储在 `wx.getStorageSync('appRole')`（值为 `'owner'`/`'guardian'`/`'secondary'`）：
+
+- **Owner（数据主人）**: 默认角色，完全读写本地 Storage，触发漏服检测与通知。
+- **Guardian（守护人）**: 通过 `guardian_bindings` 绑定，调用 `getOwnerData` 云函数只读查看被守护人数据。关键 `globalData`：`isGuardian`、`guardianData`、`guardianOwnerName`、`guardianChecked`。
+- **Secondary（副成员）**: 通过 `member_bindings` 绑定，调用 `getSecondaryData` 云函数只读查看主人数据。关键 `globalData`：`isSecondary`、`guardianData`（复用同一字段）、`primaryOwnerName`、`secondaryChecked`。
+
+Guardian 和 Secondary 模式下 `storage.js` 的读取函数均返回 `app.globalData.guardianData` 中的数据，所有写入操作被禁用。角色切换后将新角色写入 `appRole` 并同步持久化 `guardianOwnerName` / `primaryOwnerName`。
 
 ### 提醒生命周期
 

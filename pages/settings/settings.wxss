@@ -3,6 +3,14 @@
   padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
 }
 
+.page-large-title {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #1a1a2e;
+  padding: 24rpx 8rpx 32rpx;
+  letter-spacing: 4rpx;
+}
+
 .section-title {
   font-size: 18px;
   color: #a0a0b8;
@@ -37,6 +45,8 @@
   display: flex;
   align-items: center;
   gap: 20rpx;
+  flex: 1;
+  min-width: 0;
 }
 
 .menu-icon {
@@ -59,6 +69,7 @@
   font-size: 20px;
   font-weight: 500;
   color: #1a1a2e;
+  white-space: nowrap;
 }
 
 .menu-item-right {

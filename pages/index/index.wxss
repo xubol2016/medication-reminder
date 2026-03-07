@@ -7,7 +7,16 @@
 .date-bar {
   background: linear-gradient(135deg, #4A90D9 0%, #5BA3EC 50%, #6BB5F0 100%);
   color: #ffffff;
-  padding: 32rpx 36rpx 40rpx;
+  padding: 24rpx 36rpx 40rpx;
+}
+
+.date-bar-title {
+  display: block;
+  font-size: 52rpx;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 4rpx;
+  margin-bottom: 16rpx;
 }
 
 .date-bar-inner {
@@ -23,13 +32,13 @@
 }
 
 .date-text {
-  font-size: 24px;
+  font-size: 32px;
   font-weight: 700;
   letter-spacing: 1rpx;
 }
 
 .weekday {
-  font-size: 20px;
+  font-size: 24px;
   opacity: 0.85;
   font-weight: 500;
 }
