@@ -1,0 +1,23 @@
+{
+  "name": "medication-reminder",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xubol2016/medication-reminder.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xubol2016/medication-reminder/issues"
+  },
+  "homepage": "https://github.com/xubol2016/medication-reminder#readme",
+  "description": "",
+  "dependencies": {
+    "@vant/weapp": "^1.11.7"
+  }
+}
