@@ -42,8 +42,8 @@
     <view class="section-title">🔔 我的提醒配额</view>
     <van-cell-group inset round>
       <van-cell title="增加提醒配额" icon="🔔" is-link bind:click="requestSubscription">
-        <van-tag slot="right-icon" wx:if="{{myRemaining >= 0}}" type="{{myRemaining > 3 ? 'success' : (myRemaining > 0 ? 'warning' : 'danger')}}" size="medium">剩余{{myRemaining}}次</van-tag>
-        <text slot="right-icon" wx:else class="menu-hint">点击授权</text>
+        <van-tag slot="value" wx:if="{{myRemaining >= 0}}" type="{{myRemaining > 3 ? 'success' : (myRemaining > 0 ? 'warning' : 'danger')}}" size="medium">剩余{{myRemaining}}次</van-tag>
+        <text slot="value" wx:else class="menu-hint">点击授权</text>
       </van-cell>
     </van-cell-group>
     <view class="guardian-quota-hint">
@@ -56,8 +56,8 @@
     <view class="section-title">🔔 我的提醒配额</view>
     <van-cell-group inset round>
       <van-cell title="增加提醒配额" icon="🔔" is-link bind:click="requestSubscription">
-        <van-tag slot="right-icon" wx:if="{{myRemaining >= 0}}" type="{{myRemaining > 3 ? 'success' : (myRemaining > 0 ? 'warning' : 'danger')}}" size="medium">剩余{{myRemaining}}次</van-tag>
-        <text slot="right-icon" wx:else class="menu-hint">点击授权</text>
+        <van-tag slot="value" wx:if="{{myRemaining >= 0}}" type="{{myRemaining > 3 ? 'success' : (myRemaining > 0 ? 'warning' : 'danger')}}" size="medium">剩余{{myRemaining}}次</van-tag>
+        <text slot="value" wx:else class="menu-hint">点击授权</text>
       </van-cell>
     </van-cell-group>
     <view class="guardian-quota-hint">
@@ -70,12 +70,12 @@
     <view class="section-title">🔔 通知</view>
     <van-cell-group inset round>
       <van-cell title="开启服药提醒通知" icon="🔔" is-link bind:click="requestSubscription">
-        <van-tag slot="right-icon" wx:if="{{myRemaining >= 0}}" type="{{myRemaining > 3 ? 'success' : (myRemaining > 0 ? 'warning' : 'danger')}}" size="medium">剩余{{myRemaining}}次</van-tag>
-        <text slot="right-icon" wx:else class="menu-hint">点击授权</text>
+        <van-tag slot="value" wx:if="{{myRemaining >= 0}}" type="{{myRemaining > 3 ? 'success' : (myRemaining > 0 ? 'warning' : 'danger')}}" size="medium">剩余{{myRemaining}}次</van-tag>
+        <text slot="value" wx:else class="menu-hint">点击授权</text>
       </van-cell>
       <van-cell title="漏服守护通知" icon="📢" is-link bind:click="showGuardianQuotaTip">
-        <van-tag slot="right-icon" wx:if="{{guardianTotal >= 0}}" type="{{guardianTotal > 3 ? 'success' : (guardianTotal > 0 ? 'warning' : 'danger')}}" size="medium">守护人剩余{{guardianTotal}}次</van-tag>
-        <text slot="right-icon" wx:else class="menu-hint">由守护人授权</text>
+        <van-tag slot="value" wx:if="{{guardianTotal >= 0}}" type="{{guardianTotal > 3 ? 'success' : (guardianTotal > 0 ? 'warning' : 'danger')}}" size="medium">守护人剩余{{guardianTotal}}次</van-tag>
+        <text slot="value" wx:else class="menu-hint">由守护人授权</text>
       </van-cell>
     </van-cell-group>
   </block>
