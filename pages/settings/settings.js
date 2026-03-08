@@ -10,7 +10,14 @@ Page({
     isGuardian: false,
     guardianOwnerName: '',
     isSecondary: false,
-    primaryOwnerName: ''
+    primaryOwnerName: '',
+    showDialog: false,
+    dialogTitle: '',
+    dialogContent: '',
+    dialogShowCancel: true,
+    dialogCancelText: '取消',
+    dialogConfirmText: '确定',
+    dialogConfirmDanger: false
   },
 
   _lastDataVersion: -1,
@@ -121,15 +128,45 @@ Page({
     wx.navigateTo({ url: '/pages/guardians/guardians' })
   },
 
+  _showDialog({ title, content, showCancel = true, cancelText = '取消', confirmText = '确定', danger = false, onConfirm, onCancel }) {
+    this._dialogCallback = { onConfirm, onCancel }
+    this.setData({
+      showDialog: true,
+      dialogTitle: title,
+      dialogContent: content,
+      dialogShowCancel: showCancel,
+      dialogCancelText: cancelText,
+      dialogConfirmText: confirmText,
+      dialogConfirmDanger: danger
+    })
+  },
+
+  dialogConfirm() {
+    this.setData({ showDialog: false })
+    if (this._dialogCallback && this._dialogCallback.onConfirm) {
+      this._dialogCallback.onConfirm()
+    }
+    this._dialogCallback = null
+  },
+
+  dialogCancel() {
+    this.setData({ showDialog: false })
+    if (this._dialogCallback && this._dialogCallback.onCancel) {
+      this._dialogCallback.onCancel()
+    }
+    this._dialogCallback = null
+  },
+
+  noop() {},
+
   cleanOldData() {
-    wx.showModal({
+    this._showDialog({
       title: '清理历史记录',
       content: '将删除6个月前的服药记录，确定吗？',
-      success: (res) => {
-        if (res.confirm) {
-          cleanOldRecords(6)
-          wx.showToast({ title: '已清理', icon: 'success' })
-        }
+      confirmText: '确定清理',
+      onConfirm: () => {
+        cleanOldRecords(6)
+        wx.showToast({ title: '已清理', icon: 'success' })
       }
     })
   },
@@ -171,14 +208,14 @@ Page({
     } else if (total === 0) {
       content = '当前所有守护人的通知配额为0，漏服提醒无法送达。\n\n请让守护人打开小程序，在「守护人管理」页点击「续订提醒」进行授权。'
     } else {
-      content = `当前守护人通知配额共${total}次。\n\n配额由守护人自行授权获得，每次授权+1次，每发送一条漏服通知-1次。\n如需增加，请让守护人点击「续订提醒」。`
+      content = `当前守护人通知配额共${total}次。\n\n配额由守护人自行授权获得，每次授权+1次，每发送一条漏服通知-1次。\n如需增加，请让守护人点击「增加守护人提醒配额」。`
     }
 
     const myR = this.data.myRemaining
     if (myR >= 0) {
-      content += `\n\n💡 您的服药提醒配额：${myR}次（含副成员配额），用于到点推送服药提醒。`
+      content += `\n\n您的服药提醒配额：${myR}次（含副成员配额），用于到点推送服药提醒。`
     }
-    wx.showModal({
+    this._showDialog({
       title: '守护通知说明',
       content,
       showCancel: false,
@@ -187,30 +224,28 @@ Page({
   },
 
   clearAllData() {
-    wx.showModal({
+    this._showDialog({
       title: '警告',
       content: '将清除所有成员、药物和服药记录，此操作不可恢复！',
-      confirmColor: '#E74C3C',
-      success: (res) => {
-        if (res.confirm) {
-          wx.showModal({
-            title: '再次确认',
-            content: '真的要删除所有数据吗？',
-            confirmColor: '#E74C3C',
-            success: (res2) => {
-              if (res2.confirm) {
-                wx.setStorageSync('members', [])
-                wx.setStorageSync('medicines', [])
-                wx.setStorageSync('records', [])
-                wx.setStorageSync('guardians', [])
-                wx.setStorageSync('secondaryMembers', [])
-                getApp().resetToOwner()
-                this.onShow()
-                wx.showToast({ title: '已清除', icon: 'success' })
-              }
-            }
-          })
-        }
+      confirmText: '确定删除',
+      danger: true,
+      onConfirm: () => {
+        this._showDialog({
+          title: '再次确认',
+          content: '真的要删除所有数据吗？此操作无法撤销！',
+          confirmText: '确认删除',
+          danger: true,
+          onConfirm: () => {
+            wx.setStorageSync('members', [])
+            wx.setStorageSync('medicines', [])
+            wx.setStorageSync('records', [])
+            wx.setStorageSync('guardians', [])
+            wx.setStorageSync('secondaryMembers', [])
+            getApp().resetToOwner()
+            this.onShow()
+            wx.showToast({ title: '已清除', icon: 'success' })
+          }
+        })
       }
     })
   }

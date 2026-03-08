@@ -105,12 +105,12 @@
 
   <!-- 守护人提醒配额（仅守护人模式显示） -->
   <block wx:if="{{isGuardian}}">
-    <view class="section-title">🔔 我的提醒配额</view>
+    <view class="section-title">🔔 守护人的提醒配额</view>
     <view class="card menu-card">
       <view class="menu-item" bindtap="requestSubscription">
         <view class="menu-item-left">
           <view class="menu-icon menu-icon-green">🔔</view>
-          <text class="menu-text">增加提醒配额</text>
+          <text class="menu-text">增加守护人提醒配额</text>
         </view>
         <view class="menu-item-right">
           <text class="menu-quota {{myRemaining > 3 ? 'quota-ok' : (myRemaining > 0 ? 'quota-warn' : 'quota-empty')}}" wx:if="{{myRemaining >= 0}}">剩余{{myRemaining}}次</text>
@@ -183,6 +183,18 @@
         <text class="menu-text">版本</text>
       </view>
       <text class="menu-hint">v1.0.0</text>
+    </view>
+  </view>
+
+  <!-- 自定义对话框 -->
+  <view class="dialog-mask" wx:if="{{showDialog}}" catchtap="dialogCancel">
+    <view class="dialog-box" catchtap="noop">
+      <view class="dialog-title">{{dialogTitle}}</view>
+      <view class="dialog-content">{{dialogContent}}</view>
+      <view class="dialog-actions">
+        <view class="dialog-btn dialog-btn-cancel" wx:if="{{dialogShowCancel}}" bindtap="dialogCancel">{{dialogCancelText}}</view>
+        <view class="dialog-btn dialog-btn-confirm {{dialogConfirmDanger ? 'dialog-btn-danger' : ''}}" bindtap="dialogConfirm">{{dialogConfirmText}}</view>
+      </view>
     </view>
   </view>
 

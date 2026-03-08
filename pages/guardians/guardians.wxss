@@ -5,7 +5,7 @@
 /* 守护人卡片 */
 .guardian-card {
   margin-bottom: 0;
-  margin-top: 16rpx;
+  margin-top: 20rpx;
   transition: all 0.2s ease;
 }
 
@@ -13,7 +13,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20rpx;
+  margin-bottom: 24rpx;
 }
 
 .guardian-info {
@@ -22,15 +22,15 @@
 }
 
 .guardian-avatar {
-  width: 96rpx;
-  height: 96rpx;
+  width: 112rpx;
+  height: 112rpx;
   border-radius: 50%;
   background: linear-gradient(135deg, #f0932b, #e17055);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
-  margin-right: 28rpx;
+  font-size: 32px;
+  margin-right: 32rpx;
   box-shadow: 0 6rpx 16rpx rgba(225, 112, 85, 0.3);
 }
 
@@ -40,23 +40,23 @@
 }
 
 .guardian-name {
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 32px;
+  font-weight: 700;
   color: #1a1a2e;
 }
 
 .guardian-relation {
-  font-size: 18px;
+  font-size: 24px;
   color: #a0a0b8;
-  margin-top: 6rpx;
+  margin-top: 8rpx;
 }
 
 /* 状态徽章 */
 .guardian-status {
-  font-size: 18px;
-  padding: 12rpx 28rpx;
-  border-radius: 20rpx;
-  font-weight: 500;
+  font-size: 22px;
+  padding: 16rpx 32rpx;
+  border-radius: 24rpx;
+  font-weight: 600;
 }
 
 .status-bound {
@@ -77,10 +77,10 @@
 }
 
 .action-btn {
-  font-size: 18px;
-  padding: 18rpx 28rpx;
-  border-radius: 16rpx;
-  font-weight: 500;
+  font-size: 22px;
+  padding: 22rpx 32rpx;
+  border-radius: 18rpx;
+  font-weight: 600;
   transition: all 0.2s ease;
 }
 
@@ -105,10 +105,10 @@
 
 /* 守护人配额标签 */
 .guardian-quota {
-  font-size: 16px;
-  font-weight: 600;
-  padding: 10rpx 24rpx;
-  border-radius: 16rpx;
+  font-size: 22px;
+  font-weight: 700;
+  padding: 14rpx 28rpx;
+  border-radius: 18rpx;
   align-self: center;
 }
 
@@ -140,25 +140,26 @@
 /* 空状态 */
 .empty-state {
   text-align: center;
-  padding: 100rpx 0;
+  padding: 120rpx 40rpx;
 }
 
 .empty-icon {
-  font-size: 48px;
-  margin-bottom: 20rpx;
+  font-size: 80px;
+  margin-bottom: 32rpx;
 }
 
 .empty-text {
-  font-size: 22px;
-  color: #a0a0b8;
-  margin-bottom: 12rpx;
-  font-weight: 500;
+  font-size: 36px;
+  color: #555;
+  margin-bottom: 20rpx;
+  font-weight: 700;
 }
 
 .empty-hint {
-  font-size: 18px;
-  color: #c8c8d8;
-  padding: 0 60rpx;
+  font-size: 28px;
+  color: #888;
+  padding: 0 40rpx;
+  line-height: 1.8;
 }
 
 /* 底部弹窗 */
@@ -185,31 +186,31 @@
 
 /* 表单 */
 .form-title {
-  font-size: 24px;
+  font-size: 32px;
   font-weight: 700;
-  margin-bottom: 32rpx;
+  margin-bottom: 36rpx;
   color: #1a1a2e;
 }
 
 .form-group {
-  margin-bottom: 32rpx;
+  margin-bottom: 36rpx;
 }
 
 .form-label {
-  font-size: 20px;
+  font-size: 26px;
   color: #555;
-  margin-bottom: 16rpx;
-  font-weight: 500;
+  margin-bottom: 18rpx;
+  font-weight: 600;
 }
 
 .form-input {
   width: 100%;
-  height: 104rpx;
-  line-height: 104rpx;
+  height: 112rpx;
+  line-height: 112rpx;
   padding: 0 32rpx;
   border: 2rpx solid #e8e8f0;
   border-radius: 20rpx;
-  font-size: 22px;
+  font-size: 26px;
   box-sizing: border-box;
   background: #f8f9fc;
 }
@@ -224,11 +225,11 @@
 .relation-option {
   flex: 1;
   min-width: 120rpx;
-  height: 100rpx;
-  line-height: 100rpx;
+  height: 112rpx;
+  line-height: 112rpx;
   text-align: center;
-  font-size: 22px;
-  font-weight: 500;
+  font-size: 26px;
+  font-weight: 600;
   border-radius: 20rpx;
   background: #f8f9fc;
   border: 2rpx solid #e8e8f0;
@@ -254,7 +255,7 @@
 }
 
 .custom-relation-input {
-  font-size: 20px;
+  font-size: 26px;
 }
 
 .form-actions {
@@ -268,34 +269,35 @@
 
 /* 邀请面板 */
 .invite-steps {
-  margin: 24rpx 0;
+  margin: 28rpx 0;
 }
 
 .invite-step {
   display: flex;
-  align-items: center;
-  margin-bottom: 24rpx;
+  align-items: flex-start;
+  margin-bottom: 28rpx;
 }
 
 .step-num {
-  width: 56rpx;
-  height: 56rpx;
+  width: 64rpx;
+  height: 64rpx;
   border-radius: 50%;
   background: linear-gradient(135deg, #4A90D9, #5BA3EC);
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 24px;
   font-weight: 700;
   margin-right: 24rpx;
   flex-shrink: 0;
 }
 
 .step-text {
-  font-size: 20px;
+  font-size: 26px;
   color: #444;
-  line-height: 1.6;
+  line-height: 1.7;
+  padding-top: 8rpx;
 }
 
 /* 邀请码展示 */
@@ -303,19 +305,19 @@
   background: linear-gradient(135deg, #f0f6ff, #e8f0fe);
   border: 2rpx solid rgba(74, 144, 217, 0.2);
   border-radius: 20rpx;
-  padding: 32rpx;
+  padding: 36rpx;
   text-align: center;
   margin-bottom: 28rpx;
 }
 
 .invite-code-label {
-  font-size: 18px;
+  font-size: 24px;
   color: #a0a0b8;
-  margin-bottom: 12rpx;
+  margin-bottom: 16rpx;
 }
 
 .invite-code-value {
-  font-size: 20px;
+  font-size: 26px;
   font-weight: 700;
   color: #4A90D9;
   word-break: break-all;
@@ -335,19 +337,19 @@
 }
 
 .btn-share {
-  font-size: 22px;
+  font-size: 26px;
 }
 
 .btn-copy {
-  font-size: 22px;
+  font-size: 26px;
 }
 
 .invite-close {
   text-align: center;
   margin-top: 24rpx;
-  font-size: 20px;
+  font-size: 26px;
   color: #a0a0b8;
-  padding: 16rpx 0;
+  padding: 20rpx 0;
 }
 
 /* 添加按钮 */
@@ -357,7 +359,7 @@
 
 .btn-input-code {
   margin-top: 20rpx;
-  font-size: 20px;
+  font-size: 22px;
 }
 
 /* 使用提示 */
@@ -366,14 +368,14 @@
 }
 
 .tips-title {
-  font-size: 22px;
-  font-weight: 600;
+  font-size: 28px;
+  font-weight: 700;
   color: #1a1a2e;
-  margin-bottom: 16rpx;
+  margin-bottom: 20rpx;
 }
 
 .tips-text {
-  font-size: 18px;
-  color: #a0a0b8;
+  font-size: 24px;
+  color: #888;
   line-height: 2.2;
 }

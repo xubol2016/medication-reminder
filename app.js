@@ -227,7 +227,7 @@ App({
   globalData: {
     reminderInterval: null,
     pendingInviteCode: null,
-    subscribeTemplateId: 'd18h4uvleZVoDoaJ2-MUGVHgtAsu1glwWx4LiZhWcXo',
+    subscribeTemplateId: 'QuGtuTUpRcrRiQeH4t9WW2xhTa57CFSzVX3zWHj9PEI',
     isGuardian: false,
     guardianData: null,
     guardianOwnerName: '',

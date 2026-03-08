@@ -3,22 +3,25 @@
   padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
 }
 
+/* ===== 顶部大标题 ===== */
 .page-large-title {
-  font-size: 44rpx;
+  font-size: 56rpx;
   font-weight: 700;
   color: #1a1a2e;
-  padding: 24rpx 8rpx 32rpx;
+  padding: 28rpx 8rpx 36rpx;
   letter-spacing: 4rpx;
 }
 
+/* ===== 分区标题 ===== */
 .section-title {
-  font-size: 18px;
-  color: #a0a0b8;
-  padding: 28rpx 8rpx 12rpx;
-  font-weight: 600;
+  font-size: 24px;
+  color: #888;
+  padding: 32rpx 8rpx 14rpx;
+  font-weight: 700;
   letter-spacing: 2rpx;
 }
 
+/* ===== 菜单卡片 ===== */
 .menu-card {
   padding: 0;
   overflow: hidden;
@@ -26,10 +29,10 @@
 
 .menu-item {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 32rpx;
-  border-bottom: 1rpx solid #f5f5f8;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 36rpx 32rpx;
+  border-bottom: 1rpx solid #f0f0f5;
   transition: all 0.2s ease;
 }
 
@@ -41,62 +44,65 @@
   border-bottom: none;
 }
 
+/* 第一行：图标 + 文字 */
 .menu-item-left {
   display: flex;
   align-items: center;
-  gap: 20rpx;
-  flex: 1;
-  min-width: 0;
+  gap: 24rpx;
 }
 
 .menu-icon {
-  width: 72rpx;
-  height: 72rpx;
-  border-radius: 18rpx;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 22rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 30px;
+  flex-shrink: 0;
 }
 
-.menu-icon-blue { background: linear-gradient(135deg, #eef4fc, #dce8f8); }
-.menu-icon-green { background: linear-gradient(135deg, #e8faf0, #d5f5e3); }
+.menu-icon-blue   { background: linear-gradient(135deg, #eef4fc, #dce8f8); }
+.menu-icon-green  { background: linear-gradient(135deg, #e8faf0, #d5f5e3); }
 .menu-icon-orange { background: linear-gradient(135deg, #fff5e6, #ffe8cc); }
-.menu-icon-red { background: linear-gradient(135deg, #fef0f0, #fde8e8); }
+.menu-icon-red    { background: linear-gradient(135deg, #fef0f0, #fde8e8); }
 .menu-icon-purple { background: linear-gradient(135deg, #f0eeff, #e4e0fd); }
 
 .menu-text {
-  font-size: 20px;
-  font-weight: 500;
+  font-size: 26px;
+  font-weight: 600;
   color: #1a1a2e;
-  white-space: nowrap;
 }
 
+/* 第二行：副信息 + 箭头，右对齐，左边留出图标宽度对齐文字 */
 .menu-item-right {
   display: flex;
   align-items: center;
-  gap: 12rpx;
+  justify-content: flex-end;
+  gap: 16rpx;
+  margin-top: 16rpx;
+  padding-left: 112rpx;
 }
 
 .menu-count {
-  font-size: 18px;
+  font-size: 22px;
   color: #4A90D9;
-  font-weight: 600;
+  font-weight: 700;
   background: linear-gradient(135deg, #eef4fc, #dce8f8);
-  padding: 8rpx 24rpx;
-  border-radius: 16rpx;
+  padding: 10rpx 28rpx;
+  border-radius: 20rpx;
 }
 
 .menu-hint {
-  font-size: 18px;
+  font-size: 22px;
   color: #a0a0b8;
 }
 
 .menu-quota {
-  font-size: 18px;
-  font-weight: 600;
-  padding: 8rpx 24rpx;
-  border-radius: 16rpx;
+  font-size: 22px;
+  font-weight: 700;
+  padding: 10rpx 28rpx;
+  border-radius: 20rpx;
 }
 
 .quota-ok {
@@ -115,18 +121,100 @@
 }
 
 .menu-arrow {
-  font-size: 24px;
+  font-size: 28px;
   color: #d0d0d8;
   font-weight: 300;
 }
 
-.guardian-quota-hint {
-  padding: 16rpx 32rpx 0;
-  font-size: 14px;
-  color: #a0a0b8;
-  line-height: 1.6;
+/* ===== 自定义对话框 ===== */
+.dialog-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
 }
 
+.dialog-box {
+  background: #ffffff;
+  border-radius: 24rpx;
+  width: 640rpx;
+  padding: 44rpx 44rpx 36rpx;
+  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.15);
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog-title {
+  font-size: 30px;
+  font-weight: 700;
+  color: #1a1a2e;
+  text-align: center;
+  margin-bottom: 24rpx;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+.dialog-content {
+  font-size: 24px;
+  color: #333333;
+  line-height: 1.8;
+  margin-bottom: 36rpx;
+  text-align: left;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 24rpx;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.dialog-btn {
+  padding: 24rpx 48rpx;
+  border-radius: 16rpx;
+  font-size: 30px;
+  font-weight: 700;
+  text-align: center;
+  min-width: 160rpx;
+}
+
+.dialog-btn:active {
+  opacity: 0.75;
+}
+
+.dialog-btn-cancel {
+  background: #f0f2f5;
+  color: #555555;
+}
+
+.dialog-btn-confirm {
+  background: linear-gradient(135deg, #4A90D9, #5BA3EC);
+  color: #ffffff;
+}
+
+.dialog-btn-danger {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: #ffffff;
+}
+
+/* ===== 配额说明 ===== */
+.guardian-quota-hint {
+  padding: 20rpx 32rpx 4rpx;
+  font-size: 22px;
+  color: #888;
+  line-height: 1.7;
+}
+
+/* ===== 使用提示 ===== */
 .tips {
   margin-top: 40rpx;
   background: linear-gradient(135deg, #fffcf0, #fff8e1);
@@ -134,14 +222,14 @@
 }
 
 .tips-title {
-  font-size: 19px;
+  font-size: 26px;
   font-weight: 700;
   color: #f0932b;
-  margin-bottom: 20rpx;
+  margin-bottom: 24rpx;
 }
 
 .tips-text {
-  font-size: 18px;
+  font-size: 24px;
   color: #7a6e5a;
   line-height: 2.2;
 }

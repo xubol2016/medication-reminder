@@ -3,51 +3,42 @@
   padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
 }
 
-/* 成员分组标题 */
+/* ===== 成员分组标题 ===== */
 .member-group-header {
   display: flex;
   align-items: center;
-  gap: 16rpx;
-  padding: 32rpx 8rpx 12rpx;
+  gap: 20rpx;
+  padding: 36rpx 8rpx 16rpx;
 }
 
 .member-avatar {
-  width: 64rpx;
-  height: 64rpx;
+  width: 88rpx;
+  height: 88rpx;
   border-radius: 50%;
   background: linear-gradient(135deg, #5BA3EC, #4A90D9);
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 28px;
   font-weight: 700;
   box-shadow: 0 4rpx 12rpx rgba(74, 144, 217, 0.3);
   flex-shrink: 0;
 }
 
 .member-group-name {
-  font-size: 22px;
+  font-size: 30px;
   font-weight: 700;
   color: #1a1a2e;
   flex: 1;
 }
 
 .member-med-count {
-  font-size: 18px;
-  color: #a0a0b8;
+  font-size: 24px;
+  color: #888;
 }
 
-/* 药物剂量行 */
-.med-dosage-row {
-  margin-top: 10rpx;
-}
-
-.med-dosage-text {
-  font-size: 18px;
-  color: #a0a0b8;
-}
-
+/* ===== 药物卡片 ===== */
 .med-card {
   margin-bottom: 0;
   margin-top: 16rpx;
@@ -63,40 +54,72 @@
 .med-name-wrap {
   display: flex;
   align-items: center;
-  gap: 12rpx;
+  gap: 16rpx;
+  flex: 1;
 }
 
 .med-pill-icon {
-  font-size: 22px;
+  font-size: 28px;
+}
+
+.med-name-block {
+  flex: 1;
 }
 
 .med-name {
-  font-size: 22px;
+  font-size: 30px;
   font-weight: 700;
   color: #1a1a2e;
 }
 
+.med-drug-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-top: 12rpx;
+}
+
+.med-drug-tag {
+  font-size: 20px;
+  color: #4A90D9;
+  background: linear-gradient(135deg, #eef4fc, #dce8f8);
+  padding: 6rpx 24rpx;
+  border-radius: 14rpx;
+  font-weight: 500;
+}
+
+/* 药物剂量行 */
+.med-dosage-row {
+  margin-top: 14rpx;
+}
+
+.med-dosage-text {
+  font-size: 24px;
+  color: #666;
+}
+
 .med-detail {
   margin-top: 12rpx;
-  font-size: 18px;
+  font-size: 22px;
   display: flex;
   align-items: center;
   gap: 8rpx;
 }
 
 .med-detail-icon {
-  font-size: 18px;
+  font-size: 22px;
 }
 
 .med-detail-text {
-  color: #a0a0b8;
-  font-size: 18px;
+  color: #666;
+  font-size: 22px;
 }
 
 .med-detail-sep {
   color: #d0d0d8;
 }
 
+/* 服药时间标签 */
 .med-times {
   display: flex;
   flex-wrap: wrap;
@@ -107,12 +130,13 @@
 .time-tag {
   background: linear-gradient(135deg, #eef4fc, #dce8f8);
   color: #4A90D9;
-  padding: 12rpx 28rpx;
-  border-radius: 20rpx;
-  font-size: 18px;
-  font-weight: 600;
+  padding: 14rpx 32rpx;
+  border-radius: 24rpx;
+  font-size: 22px;
+  font-weight: 700;
 }
 
+/* 操作按钮 */
 .med-actions {
   display: flex;
   gap: 18rpx;
@@ -122,10 +146,10 @@
 }
 
 .action-btn {
-  font-size: 18px;
-  padding: 16rpx 28rpx;
-  border-radius: 14rpx;
-  font-weight: 500;
+  font-size: 22px;
+  padding: 20rpx 32rpx;
+  border-radius: 16rpx;
+  font-weight: 600;
   transition: all 0.2s ease;
 }
 
@@ -143,117 +167,41 @@
   background: linear-gradient(135deg, #fef0f0, #fde8e8);
 }
 
-/* 空状态 */
+.action-tip {
+  color: #27ae60;
+  background: linear-gradient(135deg, #edfaf3, #d5f5e3);
+}
+
+/* ===== 空状态 ===== */
 .empty-state {
   text-align: center;
-  padding: 100rpx 0;
+  padding: 120rpx 40rpx;
 }
 
 .empty-icon {
-  font-size: 48px;
-  margin-bottom: 20rpx;
+  font-size: 80px;
+  margin-bottom: 32rpx;
 }
 
 .empty-text {
-  font-size: 22px;
-  color: #a0a0b8;
-  margin-bottom: 12rpx;
-  font-weight: 500;
+  font-size: 36px;
+  color: #555;
+  margin-bottom: 20rpx;
+  font-weight: 700;
 }
 
 .empty-hint {
-  font-size: 18px;
-  color: #c8c8d8;
+  font-size: 28px;
+  color: #888;
+  line-height: 1.7;
 }
 
-/* 表单弹层 */
-.form-panel {
-  max-height: 80vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.form-scroll {
-  height: calc(80vh - 300rpx);
-}
-
-.form-title {
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 24rpx;
-  color: #1a1a2e;
-}
-
-.picker-value {
-  font-size: 20px;
-  padding: 20rpx 24rpx;
-  color: #1a1a2e;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-weight: 500;
-  background: #f5f7fa;
-  border-radius: 16rpx;
-  border: 2rpx solid #e8eaed;
-  margin-top: 8rpx;
-}
-
-.picker-arrow {
-  color: #a0a0b8;
-  font-size: 20px;
-  margin-left: 12rpx;
-}
-
-.time-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16rpx;
-  margin-bottom: 16rpx;
-}
-
-.time-item {
-  display: flex;
-  align-items: center;
-  background: linear-gradient(135deg, #eef4fc, #dce8f8);
-  padding: 14rpx 28rpx;
-  border-radius: 20rpx;
-  font-size: 18px;
-  color: #4A90D9;
-  font-weight: 600;
-}
-
-.time-item-text {
-  margin-right: 12rpx;
-}
-
-.time-remove {
-  margin-left: 8rpx;
-  color: #e74c3c;
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.add-time-btn {
-  color: #4A90D9;
-  font-size: 18px;
-  font-weight: 600;
-  padding: 20rpx 0;
-}
-
-.form-actions {
-  display: flex;
-  gap: 24rpx;
-}
-
-.form-actions button {
-  flex: 1;
-}
-
+/* 添加按钮 */
 .add-btn-wrap {
   padding: 0 24rpx;
 }
 
-/* ====== 自定义弹出面板通用样式 ====== */
+/* ===== 弹层通用 ===== */
 .tp-mask {
   position: fixed;
   top: 0;
@@ -277,14 +225,115 @@
 }
 
 .tp-title {
-  font-size: 24px;
+  font-size: 30px;
   font-weight: 700;
   color: #1a1a2e;
   text-align: center;
   margin-bottom: 32rpx;
 }
 
-/* 成员选择器 */
+/* ===== 表单弹层 ===== */
+.form-panel {
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-scroll {
+  height: calc(80vh - 300rpx);
+}
+
+.form-title {
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 28rpx;
+  color: #1a1a2e;
+}
+
+.picker-value {
+  font-size: 24px;
+  padding: 24rpx;
+  color: #1a1a2e;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  background: #f5f7fa;
+  border-radius: 18rpx;
+  border: 2rpx solid #e8eaed;
+  margin-top: 8rpx;
+}
+
+.picker-arrow {
+  color: #a0a0b8;
+  font-size: 22px;
+  margin-left: 12rpx;
+}
+
+.form-label-hint {
+  font-size: 20px;
+  font-weight: 400;
+  color: #a0a0b8;
+  margin-left: 8rpx;
+}
+
+/* 时间列表 */
+.time-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.time-item {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #eef4fc, #dce8f8);
+  padding: 16rpx 32rpx;
+  border-radius: 24rpx;
+  font-size: 22px;
+  color: #4A90D9;
+  font-weight: 700;
+}
+
+.time-item-text {
+  margin-right: 12rpx;
+}
+
+.time-remove {
+  margin-left: 8rpx;
+  color: #e74c3c;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.add-time-btn {
+  color: #4A90D9;
+  font-size: 22px;
+  font-weight: 700;
+  padding: 20rpx 0;
+}
+
+.form-actions {
+  display: flex;
+  gap: 24rpx;
+}
+
+.form-actions button {
+  flex: 1;
+}
+
+/* ===== 底部操作 ===== */
+.tp-actions {
+  display: flex;
+  gap: 24rpx;
+}
+
+.tp-action-btn {
+  flex: 1;
+}
+
+/* ===== 成员选择器 ===== */
 .mp-list {
   display: flex;
   flex-direction: column;
@@ -312,33 +361,33 @@
 }
 
 .mp-avatar {
-  width: 88rpx;
-  height: 88rpx;
+  width: 96rpx;
+  height: 96rpx;
   border-radius: 50%;
   background: linear-gradient(135deg, #5BA3EC, #4A90D9);
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
   box-shadow: 0 4rpx 12rpx rgba(74, 144, 217, 0.3);
 }
 
 .mp-name {
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 30px;
+  font-weight: 700;
   color: #1a1a2e;
   flex: 1;
 }
 
 .mp-check {
-  font-size: 24px;
+  font-size: 28px;
   color: #4A90D9;
   font-weight: 700;
 }
 
-/* 常用时间预设 */
+/* ===== 时间选择器 ===== */
 .tp-presets {
   display: flex;
   gap: 16rpx;
@@ -367,19 +416,18 @@
 }
 
 .tp-preset-label {
-  font-size: 18px;
+  font-size: 22px;
   color: #6b6b80;
   margin-bottom: 8rpx;
   font-weight: 500;
 }
 
 .tp-preset-time {
-  font-size: 24px;
+  font-size: 30px;
   font-weight: 700;
   color: #4A90D9;
 }
 
-/* 分割线 */
 .tp-divider {
   display: flex;
   align-items: center;
@@ -394,12 +442,12 @@
 }
 
 .tp-divider-text {
-  font-size: 18px;
+  font-size: 22px;
   color: #a0a0b8;
   font-weight: 500;
 }
 
-/* 小时/分钟调节器 */
+/* 时间调节器 */
 .tp-spinners {
   display: flex;
   align-items: center;
@@ -415,7 +463,7 @@
 }
 
 .tp-spin-label {
-  font-size: 18px;
+  font-size: 22px;
   color: #a0a0b8;
   margin-bottom: 16rpx;
   font-weight: 500;
@@ -428,14 +476,14 @@
 }
 
 .tp-spin-btn {
-  width: 80rpx;
-  height: 80rpx;
+  width: 88rpx;
+  height: 88rpx;
   border-radius: 50%;
   background: linear-gradient(135deg, #f0f2f5, #e8eaed);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30px;
+  font-size: 34px;
   font-weight: 700;
   color: #4A90D9;
   transition: all 0.2s ease;
@@ -448,11 +496,11 @@
 }
 
 .tp-spin-value {
-  width: 110rpx;
-  height: 110rpx;
-  line-height: 110rpx;
+  width: 120rpx;
+  height: 120rpx;
+  line-height: 120rpx;
   text-align: center;
-  font-size: 42px;
+  font-size: 44px;
   font-weight: 700;
   color: #1a1a2e;
   background: #f8f9fc;
@@ -461,38 +509,20 @@
 }
 
 .tp-colon {
-  font-size: 36px;
+  font-size: 40px;
   font-weight: 700;
   color: #1a1a2e;
   padding-top: 40rpx;
 }
 
-/* 底部操作 */
-.tp-actions {
-  display: flex;
-  gap: 24rpx;
-}
-
-.tp-action-btn {
-  flex: 1;
-}
-
-/* ====== 健康小提示功能样式 ====== */
-
-/* 药物卡片上的提示按钮 */
-.action-tip {
-  color: #27ae60;
-  background: linear-gradient(135deg, #edfaf3, #d5f5e3);
-}
-
-/* 表单内查询按钮 */
+/* ===== 用药提示功能 ===== */
 .tip-query-btn {
   display: flex;
   align-items: center;
   gap: 12rpx;
   margin-top: 20rpx;
-  padding: 24rpx 32rpx;
-  border-radius: 16rpx;
+  padding: 26rpx 32rpx;
+  border-radius: 18rpx;
   background: #f0f2f5;
   border: 2rpx solid #e0e2e8;
   transition: all 0.2s ease;
@@ -508,24 +538,23 @@
 }
 
 .tip-query-icon {
-  font-size: 20px;
+  font-size: 24px;
 }
 
 .tip-query-text {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 22px;
+  font-weight: 700;
   color: #4A90D9;
 }
 
-/* 已采用提示标记 */
 .tip-adopted-badge {
   margin-top: 16rpx;
-  padding: 16rpx 24rpx;
-  border-radius: 12rpx;
+  padding: 18rpx 24rpx;
+  border-radius: 14rpx;
   background: linear-gradient(135deg, #edfaf3, #d5f5e3);
-  font-size: 18px;
+  font-size: 22px;
   color: #27ae60;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 /* 加载状态 */
@@ -540,8 +569,8 @@
 }
 
 .tip-loading-spinner {
-  width: 40rpx;
-  height: 40rpx;
+  width: 44rpx;
+  height: 44rpx;
   border: 4rpx solid #e0e2e8;
   border-top-color: #4A90D9;
   border-radius: 50%;
@@ -554,73 +583,70 @@
 }
 
 .tip-loading-text {
-  font-size: 18px;
-  color: #a0a0b8;
+  font-size: 22px;
+  color: #888;
 }
 
 /* 查询结果卡片 */
 .tip-result-card {
   margin-top: 20rpx;
-  padding: 28rpx 24rpx;
+  padding: 32rpx 28rpx;
   background: linear-gradient(135deg, #f8fbff, #eef4fc);
   border-radius: 20rpx;
   border: 2rpx solid #d0e4f7;
 }
 
-/* 提示内容各节 */
 .tip-section {
-  margin-bottom: 24rpx;
+  margin-bottom: 28rpx;
 }
 
 .tip-section-label {
   display: block;
-  font-size: 17px;
+  font-size: 22px;
   font-weight: 700;
   color: #4A90D9;
-  margin-bottom: 10rpx;
+  margin-bottom: 12rpx;
 }
 
 .tip-section-text {
   display: block;
-  font-size: 18px;
+  font-size: 22px;
   color: #2c2c3e;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 .tip-highlight {
   color: #27ae60;
-  font-weight: 600;
+  font-weight: 700;
 }
 
-/* 注意事项列表项 */
 .tip-caution-item {
   display: flex;
   align-items: flex-start;
   gap: 12rpx;
-  margin-bottom: 8rpx;
+  margin-bottom: 10rpx;
 }
 
 .tip-caution-dot {
-  font-size: 22px;
+  font-size: 24px;
   color: #f0932b;
-  line-height: 1.4;
+  line-height: 1.5;
   flex-shrink: 0;
 }
 
 .tip-caution-text {
-  font-size: 18px;
+  font-size: 22px;
   color: #2c2c3e;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
-/* 采用按钮 */
 .tip-adopt-btn {
   margin-top: 20rpx;
-  padding: 24rpx;
-  border-radius: 16rpx;
+  padding: 28rpx;
+  border-radius: 18rpx;
   background: linear-gradient(135deg, #4A90D9, #5BA3EC);
   text-align: center;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 700;
   color: #ffffff;
   box-shadow: 0 4rpx 16rpx rgba(74, 144, 217, 0.35);
@@ -650,102 +676,8 @@
   padding: 0 4rpx;
 }
 
-/* ====== 药物名称标签提示 ====== */
-.form-label-hint {
-  font-size: 15px;
-  font-weight: 400;
-  color: #a0a0b8;
-  margin-left: 8rpx;
-}
-
-/* ====== 药物卡片：具体药名标签 ====== */
-.med-name-block {
-  flex: 1;
-}
-
-.med-drug-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8rpx;
-  margin-top: 10rpx;
-}
-
-.med-drug-tag {
-  font-size: 15px;
-  color: #4A90D9;
-  background: linear-gradient(135deg, #eef4fc, #dce8f8);
-  padding: 4rpx 20rpx;
-  border-radius: 12rpx;
-  font-weight: 500;
-}
-
-/* ====== 具体药名输入区域 ====== */
-.drug-name-item {
-  margin-bottom: 28rpx;
-}
-
-.drug-name-row {
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
-  margin-bottom: 16rpx;
-}
-
-.drug-name-num {
-  width: 52rpx;
-  height: 52rpx;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #4A90D9, #5BA3EC);
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 17px;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.drug-name-input {
-  flex: 1;
-  background: #f5f7fa;
-  border: 2rpx solid #e8eaed;
-  border-radius: 16rpx;
-  padding: 0 24rpx;
-  font-size: 18px;
-  color: #1a1a2e;
-  height: 88rpx;
-  line-height: 88rpx;
-}
-
-.drug-name-del {
-  width: 60rpx;
-  height: 60rpx;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #fef0f0, #fde8e8);
-  color: #e74c3c;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.drug-name-del:active {
-  transform: scale(0.88);
-}
-
-/* 继续添加药名按钮 */
-.add-drug-name-btn {
-  color: #4A90D9;
-  font-size: 18px;
-  font-weight: 600;
-  padding: 16rpx 0 8rpx;
-}
-
-/* ====== 查看提示弹层：多药名块 ====== */
 .tip-drug-block {
-  padding: 28rpx 24rpx;
+  padding: 32rpx 28rpx;
   margin-bottom: 24rpx;
   background: linear-gradient(135deg, #f8fbff, #eef4fc);
   border-radius: 20rpx;
@@ -758,21 +690,84 @@
 
 .tip-drug-name-badge {
   display: inline-block;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 700;
   color: #ffffff;
   background: linear-gradient(135deg, #4A90D9, #5BA3EC);
-  padding: 10rpx 28rpx;
-  border-radius: 12rpx;
-  margin-bottom: 24rpx;
+  padding: 12rpx 32rpx;
+  border-radius: 14rpx;
+  margin-bottom: 28rpx;
 }
 
-/* ====== 具体药名内部：剂量与时间 ====== */
+/* ===== 具体药名输入区域 ===== */
+.drug-name-item {
+  margin-bottom: 32rpx;
+}
+
+.drug-name-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.drug-name-num {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4A90D9, #5BA3EC);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.drug-name-input {
+  flex: 1;
+  background: #f5f7fa;
+  border: 2rpx solid #e8eaed;
+  border-radius: 18rpx;
+  padding: 0 28rpx;
+  font-size: 22px;
+  color: #1a1a2e;
+  height: 96rpx;
+  line-height: 96rpx;
+}
+
+.drug-name-del {
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fef0f0, #fde8e8);
+  color: #e74c3c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.drug-name-del:active {
+  transform: scale(0.88);
+}
+
+.add-drug-name-btn {
+  color: #4A90D9;
+  font-size: 22px;
+  font-weight: 700;
+  padding: 20rpx 0 8rpx;
+}
+
+/* 药名内部：剂量与时间 */
 .drug-sub-fields {
   margin-top: 16rpx;
-  padding: 20rpx 24rpx;
+  padding: 24rpx;
   background: #f8f9fc;
-  border-radius: 16rpx;
+  border-radius: 18rpx;
   border: 2rpx solid #eef0f5;
 }
 
@@ -780,7 +775,7 @@
   display: flex;
   align-items: center;
   gap: 16rpx;
-  padding: 12rpx 0;
+  padding: 14rpx 0;
   border-bottom: 1rpx solid #eef0f5;
 }
 
@@ -794,11 +789,11 @@
 }
 
 .drug-sub-label {
-  font-size: 17px;
-  color: #6b6b80;
-  font-weight: 500;
+  font-size: 22px;
+  color: #555;
+  font-weight: 600;
   flex-shrink: 0;
-  width: 144rpx;
+  width: 160rpx;
   padding-top: 4rpx;
 }
 
@@ -806,12 +801,12 @@
   flex: 1;
   background: #ffffff;
   border: 2rpx solid #e8eaed;
-  border-radius: 12rpx;
-  padding: 0 20rpx;
-  font-size: 18px;
+  border-radius: 14rpx;
+  padding: 0 24rpx;
+  font-size: 22px;
   color: #1a1a2e;
-  height: 80rpx;
-  line-height: 80rpx;
+  height: 88rpx;
+  line-height: 88rpx;
 }
 
 .drug-times-wrap {

@@ -42,9 +42,9 @@ exports.main = async (event, context) => {
         templateId: templateId,
         data: {
           thing1: { value: memberName },
-          time2: { value: `${date} ${missedTime}` },
           thing3: { value: medicineName },
-          thing4: { value: '请及时提醒家人服药' }
+          time2: { value: `${date} ${missedTime}` },
+          thing5: { value: '请及时提醒家人服药' }
         },
         page: 'pages/index/index'
       })

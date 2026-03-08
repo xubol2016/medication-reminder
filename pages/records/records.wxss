@@ -3,18 +3,18 @@
   padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
 }
 
-/* 月份栏 */
+/* ===== 月份栏 ===== */
 .month-bar {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 24rpx 28rpx 32rpx;
+  padding: 28rpx 28rpx 36rpx;
   background: linear-gradient(135deg, #4A90D9, #5BA3EC);
   gap: 16rpx;
 }
 
 .month-bar-title {
-  font-size: 52rpx;
+  font-size: 56rpx;
   font-weight: 700;
   color: #ffffff;
   letter-spacing: 4rpx;
@@ -27,10 +27,10 @@
 }
 
 .month-btn {
-  font-size: 26px;
+  font-size: 28px;
   color: rgba(255, 255, 255, 0.9);
-  padding: 16rpx 28rpx;
-  border-radius: 12rpx;
+  padding: 16rpx 32rpx;
+  border-radius: 14rpx;
   transition: all 0.2s ease;
 }
 
@@ -40,13 +40,13 @@
 }
 
 .month-text {
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 700;
   color: #ffffff;
   letter-spacing: 2rpx;
 }
 
-/* 日历卡片 */
+/* ===== 日历卡片 ===== */
 .calendar {
   margin-top: 24rpx;
   padding: 24rpx;
@@ -60,10 +60,10 @@
 .cal-header-cell {
   flex: 1;
   text-align: center;
-  font-size: 18px;
-  color: #a0a0b8;
-  padding: 12rpx 0;
-  font-weight: 600;
+  font-size: 22px;
+  color: #888;
+  padding: 14rpx 0;
+  font-weight: 700;
 }
 
 .cal-body {
@@ -80,12 +80,13 @@
 
 .cal-day {
   display: inline-block;
-  width: 72rpx;
-  height: 72rpx;
-  line-height: 72rpx;
+  width: 80rpx;
+  height: 80rpx;
+  line-height: 80rpx;
   border-radius: 50%;
-  font-size: 18px;
+  font-size: 22px;
   color: #1a1a2e;
+  font-weight: 500;
   transition: all 0.2s ease;
 }
 
@@ -114,9 +115,9 @@
 }
 
 .dot-green { background: #2ecc71; }
-.dot-red { background: #e74c3c; }
+.dot-red   { background: #e74c3c; }
 
-/* 成员 Tab */
+/* ===== 成员 Tab ===== */
 .member-tabs {
   white-space: nowrap;
   padding: 24rpx 24rpx 12rpx;
@@ -124,14 +125,14 @@
 
 .tab {
   display: inline-block;
-  padding: 18rpx 40rpx;
+  padding: 20rpx 44rpx;
   margin-right: 16rpx;
-  border-radius: 36rpx;
-  font-size: 18px;
+  border-radius: 40rpx;
+  font-size: 24px;
   color: #6b6b80;
   background: #ffffff;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
-  font-weight: 500;
+  font-weight: 600;
   transition: all 0.2s ease;
 }
 
@@ -145,7 +146,7 @@
   box-shadow: 0 4rpx 16rpx rgba(74, 144, 217, 0.3);
 }
 
-/* 当日摘要 */
+/* ===== 当日摘要卡片 ===== */
 .day-card {
   margin-top: 16rpx;
 }
@@ -159,16 +160,16 @@
 .day-date-wrap {
   display: flex;
   align-items: center;
-  gap: 12rpx;
+  gap: 14rpx;
 }
 
 .day-date-icon {
-  font-size: 20px;
+  font-size: 26px;
 }
 
 .day-date {
-  font-size: 19px;
-  font-weight: 600;
+  font-size: 26px;
+  font-weight: 700;
   color: #1a1a2e;
 }
 
@@ -177,22 +178,22 @@
   align-items: center;
   gap: 8rpx;
   background: linear-gradient(135deg, #e8faf0, #d5f5e3);
-  padding: 12rpx 28rpx;
-  border-radius: 20rpx;
+  padding: 14rpx 32rpx;
+  border-radius: 24rpx;
 }
 
 .day-rate {
-  font-size: 20px;
+  font-size: 26px;
   color: #27ae60;
   font-weight: 700;
 }
 
 .day-rate-label {
-  font-size: 18px;
+  font-size: 22px;
   color: #27ae60;
 }
 
-/* 记录列表 */
+/* ===== 记录列表 ===== */
 .record-list {
   padding: 0;
 }
@@ -202,25 +203,27 @@
   align-items: center;
   justify-content: space-between;
   margin-top: 12rpx;
-  padding: 28rpx 32rpx;
+  padding: 32rpx;
 }
 
 .record-left {
   display: flex;
   align-items: center;
   gap: 24rpx;
+  flex: 1;
 }
 
 .record-time-badge {
   background: linear-gradient(135deg, #eef4fc, #dce8f8);
-  padding: 12rpx 24rpx;
-  border-radius: 12rpx;
-  min-width: 110rpx;
+  padding: 14rpx 24rpx;
+  border-radius: 14rpx;
+  min-width: 120rpx;
   text-align: center;
+  flex-shrink: 0;
 }
 
 .record-time {
-  font-size: 19px;
+  font-size: 26px;
   font-weight: 700;
   color: #4A90D9;
 }
@@ -228,29 +231,54 @@
 .record-info {
   display: flex;
   flex-direction: column;
-  gap: 6rpx;
+  gap: 8rpx;
+  flex: 1;
 }
 
 .record-name {
-  font-size: 19px;
-  font-weight: 600;
+  font-size: 28px;
+  font-weight: 700;
   color: #1a1a2e;
 }
 
 .record-member {
-  font-size: 18px;
-  color: #a0a0b8;
+  font-size: 22px;
+  color: #888;
+}
+
+.record-sub-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-top: 4rpx;
+}
+
+.record-dosage {
+  font-size: 22px;
+  color: #888;
+}
+
+.record-cat-label {
+  display: inline-block;
+  font-size: 20px;
+  color: #888;
+  background: #f0f2f5;
+  padding: 4rpx 18rpx;
+  border-radius: 8rpx;
+  margin-top: 4rpx;
 }
 
 .record-status {
   flex-shrink: 0;
+  margin-left: 16rpx;
 }
 
+/* ===== 状态标签 ===== */
 .status-pill {
-  padding: 12rpx 28rpx;
-  border-radius: 20rpx;
-  font-size: 18px;
-  font-weight: 600;
+  padding: 14rpx 30rpx;
+  border-radius: 22rpx;
+  font-size: 22px;
+  font-weight: 700;
 }
 
 .status-pill-taken {
@@ -268,44 +296,22 @@
   color: #a0a0b8;
 }
 
-/* 空状态 */
+/* ===== 空状态 ===== */
 .empty-hint {
   text-align: center;
-  padding: 80rpx;
+  padding: 100rpx 48rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16rpx;
+  gap: 20rpx;
 }
 
 .empty-hint-icon {
-  font-size: 36px;
+  font-size: 64px;
 }
 
 .empty-hint-text {
-  color: #a0a0b8;
-  font-size: 19px;
-}
-
-/* 具体药名下方的记忆名称标签 */
-.record-cat-label {
-  display: inline-block;
-  font-size: 16px;
-  color: #a0a0b8;
-  background: #f0f2f5;
-  padding: 2rpx 14rpx;
-  border-radius: 6rpx;
-  margin-top: 2rpx;
-}
-
-.record-sub-row {
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
-  margin-top: 4rpx;
-}
-
-.record-dosage {
-  font-size: 18px;
-  color: #a0a0b8;
+  color: #888;
+  font-size: 28px;
+  font-weight: 500;
 }
